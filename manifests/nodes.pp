@@ -3,7 +3,7 @@ node default inherits squishy-common {
 
 node squishy-common {
     include git
-    include epel
+    #include epel
 }
 
 node /web.*/ inherits squishy-common {
