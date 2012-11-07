@@ -3,7 +3,7 @@
 
 Vagrant::Config.run do |config|
 
-config.vm.box_url = "CentOS-6.3-x86_64-minimal.box"
+config.vm.box_url = "https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box"
 config.vm.box = "centos-minimal"
 
 # Uncomment to boot boxes with a GUI so you can see 
