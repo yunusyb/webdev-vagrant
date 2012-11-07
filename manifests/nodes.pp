@@ -4,6 +4,14 @@ node default inherits squishy-common {
 node squishy-common {
     include git
     #include epel
+    # add mysql-client and configs
+    include mysql
+    file { 'my.cnf':
+        path   => '/home/vagrant/.my.cnf',
+        ensure => file,
+        mode   => 0644,
+        source => '/vagrant/files/my.cnf',
+    }
 }
 
 node /web.*/ inherits squishy-common {
@@ -37,10 +45,9 @@ node /db.*/ inherits squishy-common {
     class { 'mysql::server':
         config_hash => { 'root_password' => 'maZiib0bool4' }
     }
-    file { 'my.cnf':
-        path   => '/home/vagrant/.my.cnf',
-        ensure => file,
-        mode   => 0644,
-        source => '/vagrant/files/my.cnf',
+    firewall { "000 accept mysql":
+        proto  => 'tcp',
+        port   => '3306',
+        action => 'accept',
     }
 }
