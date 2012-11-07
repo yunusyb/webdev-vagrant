@@ -2,7 +2,7 @@ node default inherits squishy-common {
 }
 
 node squishy-common {
-    include git
+    #include git
     #include epel
     # add mysql-client and configs
     include mysql
