@@ -18,7 +18,7 @@ node default {
     }
     # PHP config
     include php::cli
-    #include php::mod_php5
+    include php::mod_php5
     php::ini { '/etc/php.ini':
         display_errors => 'On',
         memory_limit   => '256M',
