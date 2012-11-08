@@ -1,6 +1,5 @@
 node default {
-    #include git
-    #include epel
+    include git
     # add mysql-client and configs
     include mysql
     file { 'my.cnf':
@@ -23,7 +22,7 @@ node default {
         display_errors => 'On',
         memory_limit   => '256M',
     }
-    php::module { [ 'pecl-apc', 'pecl-memcached' ]: }
+    php::module { [ 'pecl-apc', 'pecl-memcached', 'pdo', 'gd', 'mbstring' ]: }
     php::module::ini { 'pecl-apc':
         settings           => {
             'apc.enabled'  => '1',
