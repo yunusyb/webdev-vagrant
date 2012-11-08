@@ -1,7 +1,4 @@
-node default inherits squishy-common {
-}
-
-node squishy-common {
+node default {
     #include git
     #include epel
     # add mysql-client and configs
@@ -12,18 +9,13 @@ node squishy-common {
         mode   => 0644,
         source => '/vagrant/files/my.cnf',
     }
-}
-
-node /web.*/ inherits squishy-common {
     # Apache config
     include apache
-
     firewall { "000 accept http":
         proto  => 'tcp',
         port   => '80',
         action => 'accept',
     }
-
     # PHP config
     include php::cli
     #include php::mod_php5
@@ -38,14 +30,11 @@ node /web.*/ inherits squishy-common {
             'apc.shm_size' => '128m',
         }
     }
-}
-
-node /db.*/ inherits squishy-common {
     include mysql
     class { 'mysql::server':
         config_hash => { 'root_password' => 'maZiib0bool4' }
     }
-    firewall { "000 accept mysql":
+    firewall { "001 accept mysql":
         proto  => 'tcp',
         port   => '3306',
         action => 'accept',

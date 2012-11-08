@@ -1,0 +1,5 @@
+# Configuration file for system-config-firewall
+
+--enabled
+--port=3306:tcp
+--service=ssh

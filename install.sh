@@ -3,5 +3,6 @@
 # disable selinux
 echo 0 >/selinux/enforce
 
-#yum -y update
+su -c 'rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-7.noarch.rpm'
+yum -y update
 

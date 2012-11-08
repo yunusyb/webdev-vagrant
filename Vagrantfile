@@ -22,33 +22,9 @@ config.vm.provision :shell do |shell|
     shell.inline = "/vagrant/install.sh"
 end
 
-# Web server #1
-  config.vm.define :web1 do |web1_config|
-    web1_config.vm.box = "centos-minimal"
-    web1_config.vm.network :hostonly, "10.10.10.11"
-    web1_config.vm.host_name = "web1.squishyclients.net"
-    web1_config.vm.share_folder "webroot", "/server", "www"
-  end
+# We're only doing one server here
+config.vm.network :hostonly, "10.10.10.10"
+config.vm.host_name = "dev1.squishyclients.net"
+config.vm.share_folder "webroot", "/server", "www"
 
-# Web server #2
-#  config.vm.define :web2 do |web2_config|
-#    web2_config.vm.box = "centos-minimal"
-#    web2_config.vm.network :hostonly, "10.10.10.12"
-#    web2_config.vm.host_name = "web2.squishyclients.net"
-#    web2_config.vm.share_folder "webroot", "/server", "www"
-#  end
-
-# Database server #1
-  config.vm.define :db1 do |db1_config|
-    db1_config.vm.box = "centos-minimal"
-    db1_config.vm.network :hostonly, "10.10.10.21"
-    db1_config.vm.host_name = "db1.squishyclients.net"
-  end
-
-# Database server #2
-#  config.vm.define :db2 do |db2_config|
-#    db2_config.vm.box = "centos-minimal"
-#    db2_config.vm.network :hostonly, "10.10.10.22"
-#    db2_config.vm.host_name = "db2.squishyclients.net"
-#  end
 end
