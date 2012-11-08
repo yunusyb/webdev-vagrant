@@ -10,16 +10,17 @@ config.vm.box = "centos-minimal"
 #  startup. The default is headless.
 #config.vm.boot_mode = :gui
 
+# Install EPEL before puppet runs
+config.vm.provision :shell do |shell|
+    shell.inline = "/vagrant/install.sh"
+end
+
 # Puppet configs
 config.vm.provision :puppet do |puppet|
     puppet.manifests_path = "manifests"
     puppet.module_path    = "modules"
     puppet.manifest_file  = "default.pp"
     #puppet.options        = "--verbose --debug"
-end
-
-config.vm.provision :shell do |shell|
-    shell.inline = "/vagrant/install.sh"
 end
 
 # We're only doing one server here
