@@ -26,3 +26,4 @@ rm VBoxGuestAdditions_$VBOX_VERSION.iso
 yum -y install php-devel php-pear mysql-devel httpd-devel
 pecl install pdo_mysql
 echo extension=pdo_mysql.so > /etc/php.d/pdo_mysql.ini 
+service httpd restart
