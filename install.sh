@@ -23,6 +23,6 @@ rm VBoxGuestAdditions_$VBOX_VERSION.iso
 /usr/bin/puppet apply --modulepath /vagrant/modules /vagrant/manifests/default.pp
 
 # pdo_mysql hack
-yum install php-devel php-pear mysql-devel httpd-devel
+yum -y install php-devel php-pear mysql-devel httpd-devel
 pecl install pdo_mysql
 echo extension=pdo_mysql.so > /etc/php.d/pdo_mysql.ini 
