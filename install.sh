@@ -18,3 +18,11 @@ mount -o loop VBoxGuestAdditions_$VBOX_VERSION.iso /mnt
 sh /mnt/VBoxLinuxAdditions.run
 umount /mnt
 rm VBoxGuestAdditions_$VBOX_VERSION.iso
+
+# run puppet
+/usr/bin/puppet apply --modulepath /vagrant/modules /vagrant/manifests/default.pp
+
+# pdo_mysql hack
+yum install php-devel php-pear mysql-devel httpd-devel
+pecl install pdo_mysql
+echo extension=pdo_mysql.so > /etc/php.d/pdo_mysql.ini 

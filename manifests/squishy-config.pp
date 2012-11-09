@@ -27,15 +27,21 @@ firewall { "000 allow http":
 file { '/server':
     ensure => directory,
     mode   => 2775,
+    owner  => 'vagrant',
+    group  => 'vagrant',
 }
 file { '/server/htdocs':
     ensure => directory,
     mode   => 2775,
+    owner  => 'vagrant',
+    group  => 'vagrant',
 }
 file { '/server/htdocs/index.php':
     ensure => file,
     mode   => 0644,
     source => '/vagrant/files/index.php',
+    owner  => 'vagrant',
+    group  => 'vagrant',
 }
 
 # PHP config

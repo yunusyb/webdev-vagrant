@@ -17,12 +17,12 @@ config.vm.provision :shell do |shell|
 end
 
 # Puppet configs
-config.vm.provision :puppet do |puppet|
-    puppet.manifests_path = "manifests"
-    puppet.module_path    = "modules"
-    puppet.manifest_file  = "default.pp"
-    #puppet.options        = "--verbose --debug"
-end
+#config.vm.provision :puppet do |puppet|
+#    puppet.manifests_path = "manifests"
+#    puppet.module_path    = "modules"
+#    puppet.manifest_file  = "default.pp"
+#    puppet.options        = "--verbose --debug"
+#end
 
 # We're only doing one server here
 config.vm.network :hostonly, "10.10.10.10"
