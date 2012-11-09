@@ -27,6 +27,6 @@ end
 # We're only doing one server here
 config.vm.network :hostonly, "10.10.10.10"
 config.vm.host_name = "dev1.squishyclients.net"
-config.vm.share_folder "webroot", "/server", "www"
+#config.vm.share_folder "webroot", "/server", "www"
 
 end

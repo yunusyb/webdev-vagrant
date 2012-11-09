@@ -24,6 +24,19 @@ firewall { "000 allow http":
     port   => '80',
     action => 'accept',
 }
+file { '/server':
+    ensure => directory,
+    mode   => 2775,
+}
+file { '/server/htdocs':
+    ensure => directory,
+    mode   => 2775,
+}
+file { '/server/htdocs/index.php':
+    ensure => file,
+    mode   => 0644,
+    source => '/vagrant/files/index.php',
+}
 
 # PHP config
 php::ini { '/etc/php.ini':
