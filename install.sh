@@ -3,27 +3,66 @@
 # disable selinux
 echo 0 >/selinux/enforce
 
-echo "Enabling EPEL:"
-su -c 'rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-7.noarch.rpm'
-#yum -y update
+# Enabling EPEL, Puppet Labs, and Varnish repos:
+cat > /etc/yum.repos.d/puppetlabs.repo << EOM
+[puppetlabs]
+name=puppetlabs
+baseurl=http://yum.puppetlabs.com/el/6/products/\$basearch
+enabled=1
+gpgcheck=0
+EOM
 
-echo "Enabling Varnish-cache.org repo:"
-rpm --nosignature -i http://repo.varnish-cache.org/redhat/varnish-3.0/el5/noarch/varnish-release-3.0-1.noarch.rpm
+cat > /etc/yum.repos.d/epel.repo << EOM
+[epel]
+name=epel
+baseurl=http://download.fedoraproject.org/pub/epel/6/\$basearch
+enabled=1
+gpgcheck=0
+EOM
 
-# Installing the virtualbox guest additions
+cat > /etc/yum.repos.d/varnish.repo << EOM
+[varnish-3.0]
+name=Varnish 3.0 for Enterprise Linux 6 - $basearch
+baseurl=http://repo.varnish-cache.org/redhat/varnish-3.0/el6/$basearch
+enabled=1
+gpgcheck=0
+#gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-VARNISH
+EOM
+
+# Ensure VBox extensions are the current version
 VBOX_VERSION=$(cat /home/vagrant/.vbox_version)
-cd /tmp
-wget http://download.virtualbox.org/virtualbox/$VBOX_VERSION/VBoxGuestAdditions_$VBOX_VERSION.iso
-mount -o loop VBoxGuestAdditions_$VBOX_VERSION.iso /mnt
-sh /mnt/VBoxLinuxAdditions.run
-umount /mnt
-rm VBoxGuestAdditions_$VBOX_VERSION.iso
+if [ ! -f /etc/vbox_version ]
+then 
+    touch /etc/vbox_version 
+fi
+
+if diff /home/vagrant/.vbox_version /etc/vbox_version > /dev/null
+then
+    echo "Installing the virtualbox guest additions:"
+    cd /vagrant/files
+    ISO="VBoxGuestAdditions_$VBOX_VERSION.iso"
+    echo $ISO
+    if [ ! -f $ISO ]
+    then
+        wget http://download.virtualbox.org/virtualbox/$VBOX_VERSION/VBoxGuestAdditions_$VBOX_VERSION.iso
+    fi
+    mount -o loop VBoxGuestAdditions_$VBOX_VERSION.iso /mnt
+    sh /mnt/VBoxLinuxAdditions.run
+    umount /mnt
+    echo $VBOX_VERSION > /etc/vbox_version
+fi
 
 # run puppet
 /usr/bin/puppet apply --modulepath /vagrant/modules /vagrant/manifests/default.pp
 
 # pdo_mysql hack
-yum -y install php-devel php-pear mysql-devel httpd-devel
-pecl install pdo_mysql
-echo extension=pdo_mysql.so > /etc/php.d/pdo_mysql.ini 
-service httpd restart
+if [ ! -f /etc/php.d/pdo_mysql.ini ] 
+then
+    echo "Installing PDO_MYSQL:"
+    yum -y install php-devel php-pear mysql-devel httpd-devel
+    pecl channel-update pecl.php.net
+    pecl install pdo_mysql
+    echo extension=pdo_mysql.so > /etc/php.d/pdo_mysql.ini
+    service httpd restart
+fi
+
