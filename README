@@ -9,9 +9,10 @@ What it does:
 Creates a VirtualBox machine on your local machine pre-configured with Apache, PHP, MySQL.  
 
 Configuration details:
+The VM is running CentOS 6, Apache 2.2.15, MySQL 5.1, PHP 5.3.3.
 The VM is pre-configured to respond on the IP address 10.10.10.10.  
 Apache is configured to serve up /server/htdocs by default.
-The root password is 'vagrant'
+The root password is 'vagrant'.
 The 'vagrant' user is set to have full sudo rights.
 The root user on the MySQL server is preconfigured and the credentials are stored in the vagrant user's .my.cnf, so you should be able to just run "mysql" as the vagrant user and be logged in on the MySQL console as root.
 A default "squishydev" database is created with the username and password both set to "squishydev".
