@@ -3,19 +3,11 @@
 # disable selinux
 echo 0 >/selinux/enforce
 
-# Enabling EPEL, Puppet Labs, and Varnish repos:
+# Enabling EPEL, IUS, Puppet Labs, and Varnish repos:
 cat > /etc/yum.repos.d/puppetlabs.repo << EOM
 [puppetlabs]
 name=puppetlabs
 baseurl=http://yum.puppetlabs.com/el/6/products/\$basearch
-enabled=1
-gpgcheck=0
-EOM
-
-cat > /etc/yum.repos.d/epel.repo << EOM
-[epel]
-name=epel
-baseurl=http://download.fedoraproject.org/pub/epel/6/\$basearch
 enabled=1
 gpgcheck=0
 EOM
@@ -28,6 +20,14 @@ enabled=1
 gpgcheck=0
 #gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-VARNISH
 EOM
+
+if [ ! -f /etc/yum.repos.d/ius.repo ]
+then
+	rpm -U /vagrant/files/ius-release-1.0-10.ius.el6.noarch.rpm /vagrant/files/epel-release-6-5.noarch.rpm
+fi
+
+# Make sure we're up to date
+yum update -y
 
 # Ensure VBox extensions are the current version
 VBOX_VERSION=$(cat /home/vagrant/.vbox_version)
