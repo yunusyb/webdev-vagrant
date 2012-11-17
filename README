@@ -11,6 +11,7 @@ Creates a VirtualBox machine on your local machine pre-configured with Apache, P
 
 Configuration details:
 The VM is running CentOS 6, Apache 2.2.15, MySQL 5.1, PHP 5.3.3.
+The IUS repo is enabled, so newer versions of packages are available (i.e. MySQL 5.5).
 The VM is pre-configured to respond on the IP address 10.10.10.10.  
 Apache is configured to serve up /server/htdocs by default.
 The root password is 'vagrant'.
