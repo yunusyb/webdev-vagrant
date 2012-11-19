@@ -28,5 +28,6 @@ end
 config.vm.network :hostonly, "10.10.10.10"
 config.vm.host_name = "dev1.squishyclients.net"
 #config.vm.share_folder "webroot", "/server", "www"
+config.vm.forward_port 80, 8080
 
 end
