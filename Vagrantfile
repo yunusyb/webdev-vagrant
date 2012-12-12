@@ -2,8 +2,12 @@
 
 # Box list
 boxes = [
-	{ :name => :webdev,     :role => 'web',     :ip => '10.10.10.10' },
-	#{ :name => :database,   :role => 'db',      :ip => '10.10.10.11' },
+	{ :name => :web0,     :role => 'web',     :ip => '10.10.10.10' },
+	{ :name => :web1,     :role => 'web',     :ip => '10.10.10.11' },
+	{ :name => :web2,     :role => 'web',     :ip => '10.10.10.12' },
+	{ :name => :database1,   :role => 'db',      :ip => '10.10.10.13' },
+	{ :name => :database2,   :role => 'db',      :ip => '10.10.10.14' },
+	{ :name => :cache1,     :role => 'cache',     :ip => '10.10.10.15' },
 ]
 
 # Grab local hostname
