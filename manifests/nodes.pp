@@ -3,7 +3,7 @@ node /^web\d+/ {
 	include php::mod_php5
 	php::module { [ 'pecl-apc', 'pecl-memcached', 'pdo', 'gd', 'mbstring', 'xml' ]: }
     # mysql-client configs
-    file { 'my.cnf':
+	file { 'my.cnf':
 		path   => '/home/vagrant/.my.cnf',
 		ensure => file,
 		mode   => 0644,
@@ -49,16 +49,18 @@ node /^web\d+/ {
 	include git
 }
 
-node /^database\d+/ {
+node /^db\d+/ {
 	include mysql
 	# mysql-server config
 	class { 'mysql::server':
-	    config_hash => { 'root_password' => 'maZiib0bool4' }
+	    config_hash   => {
+			'bind_address'  => '0.0.0.0',
+		}
 	}
 	mysql::db { 'squishydev':
 	    user     => 'squishydev',
 	    password => 'squishydev',
-	    host     => 'localhost',
+	    host     => '%',
 	    grant    => ['all'],
 	}
     firewall { "000 allow mysql":
@@ -67,6 +69,15 @@ node /^database\d+/ {
         action => 'accept',
     }
 	include git
+}
+
+node /^cache/ {
+	include git
+	    firewall { "000 allow http":
+	        proto      => 'tcp',
+	        port     => '80',
+	        action => 'accept',
+	    }
 }
 
 node default {

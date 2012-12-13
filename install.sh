@@ -56,13 +56,13 @@ fi
 /usr/bin/puppet apply --modulepath /vagrant/modules /vagrant/manifests/default.pp
 
 # pdo_mysql hack
-#if [ ! -f /etc/php.d/pdo_mysql.ini ] 
-#then
-#    echo "Installing PDO_MYSQL:"
-#    yum -y install php-devel php-pear mysql-devel httpd-devel
-#    pecl channel-update pecl.php.net
-#    pecl install pdo_mysql
-#    echo extension=pdo_mysql.so > /etc/php.d/pdo_mysql.ini
-#    service httpd restart
-#fi
+if [ -d /etc/httpd -a ! -f /etc/php.d/pdo_mysql.ini ] 
+then
+    echo "Installing PDO_MYSQL:"
+    yum -y install php-devel php-pear mysql-devel httpd-devel
+    pecl channel-update pecl.php.net
+    pecl install pdo_mysql
+    echo extension=pdo_mysql.so > /etc/php.d/pdo_mysql.ini
+    service httpd restart
+fi
 
