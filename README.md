@@ -37,3 +37,5 @@ Basically, once you've run "vagrant up" the VM should only need you to check out
 Credits
 ==============
 Huge chunks shamelessly stolen from a gist posted by David Lutz (https://github.com/dlutzy): https://gist.github.com/2469037/646a2b99656ef68eba87cec3ecec96d2d581f68d
+=======
+Creates a set of VirtualBox machines on your local machine pre-configured with Apache, PHP, MySQL.
