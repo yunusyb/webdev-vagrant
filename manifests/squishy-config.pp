@@ -6,18 +6,6 @@ file { 'my.cnf':
     source => '/vagrant/files/my.cnf',
 }
 
-# mysql-server config
-#class { 'mysql::server':
-#    config_hash => { 'root_password' => 'maZiib0bool4' }
-#}
-
-#mysql::db { 'squishydev':
-#    user        => 'squishydev',
-#    password    => 'squishydev',
-#    host        => 'localhost',
-#    grant       => ['all'],
-#}
-
 # Apache config
 firewall { "000 allow http":
     proto  => 'tcp',
