@@ -3,11 +3,11 @@
 # Box list
 boxes = [
 	{ :name => :web0,     :role => 'web',     :ip => '10.10.10.10' },
-	{ :name => :web1,     :role => 'web',     :ip => '10.10.10.11' },
-	{ :name => :web2,     :role => 'web',     :ip => '10.10.10.12' },
+	#{ :name => :web1,     :role => 'web',     :ip => '10.10.10.11' },
+	#{ :name => :web2,     :role => 'web',     :ip => '10.10.10.12' },
 	{ :name => :database1,   :role => 'db',      :ip => '10.10.10.13' },
-	{ :name => :database2,   :role => 'db',      :ip => '10.10.10.14' },
-	{ :name => :cache1,     :role => 'cache',     :ip => '10.10.10.15' },
+	#{ :name => :database2,   :role => 'db',      :ip => '10.10.10.14' },
+	#{ :name => :cache1,     :role => 'cache',     :ip => '10.10.10.15' },
 ]
 
 # Grab local hostname
@@ -30,7 +30,13 @@ Vagrant::Config.run do |config|
 			vm_default.call(config)
 
 			# Configure network, etc.
-			config.vm.forward_port 80, 8080, :auto => true
+			#if this is a webnode, map port 8080 to port 80
+			if opts[:role] == "web"
+				config.vm.forward_port 80, 8080, :auto => true
+				config.vm.customize ["modifyvm", :id, "--cpus", 2]
+			end
+			#
+			# Set the hostname
 			config.vm.host_name = "%s.%s" % [ opts[:name].to_s, hostname.strip.to_s ]
 			#config.vm.host_name = "%s.vm" % hostname.strip.to_s
 			config.vm.network :hostonly, opts[:ip]

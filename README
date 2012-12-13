@@ -7,12 +7,12 @@ Vagrant version 1.0.5 or newer - http://vagrantup.com/
 A 64bit-capable processor and operating system (OS X 10.6 or newer is fine)
 
 What it does: 
-Creates a VirtualBox machine on your local machine pre-configured with Apache, PHP, MySQL.  
+Creates a set of VirtualBox machines on your local machine pre-configured with Apache, PHP, MySQL.  
 
 Configuration details:
-The VM is running CentOS 6, Apache 2.2.15, MySQL 5.1, PHP 5.3.3.
+The VMs are running CentOS 6, Apache 2.2.15, MySQL 5.1, PHP 5.3.3.
 The IUS repo is enabled, so newer versions of packages are available (i.e. MySQL 5.5).
-The VM is pre-configured to respond on the IP address 10.10.10.10.  
+The VMs are pre-configured to respond on the IP address range 10.10.10.0/24.  
 Apache is configured to serve up /server/htdocs by default.
 The root password is 'vagrant'.
 The 'vagrant' user is set to have full sudo rights.
@@ -27,3 +27,6 @@ To shut the machine down, run "vagrant halt".  This gracefully shuts the machine
 To delete the virtual machine, run "vagrant destroy".  This will completely erase the virtual machine and delete any changes you've made.
 
 Basically, once you've run "vagrant up" the VM should only need you to check out your code in the VM's /server/htdocs directory and tell it what database credentials to use to have a functional dev site up and running.
+
+Cerdits
+Huge chunks shamelessly stolen from a gist posted by David Lutz (https://github.com/dlutzy): https://gist.github.com/2469037/646a2b99656ef68eba87cec3ecec96d2d581f68d
