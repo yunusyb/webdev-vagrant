@@ -71,3 +71,5 @@ then
     service httpd restart
 fi
 
+# external server mount
+mount --bind /vagrant/files/server /server
