@@ -21,13 +21,18 @@ gpgcheck=0
 #gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-VARNISH
 EOM
 
+if [ ! -f /etc/yum.repos.d/epel.repo ]
+then
+    rpm -U http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/epel-release-6-5.noarch.rpm
+fi
+
 if [ ! -f /etc/yum.repos.d/ius.repo ]
 then
-	rpm -U /vagrant/files/ius-release-1.0-10.ius.el6.noarch.rpm /vagrant/files/epel-release-6-5.noarch.rpm
+	rpm -U http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/ius-release-1.0-10.ius.el6.noarch.rpm
 fi
 
 # Make sure we're up to date
-#yum update -y
+yum update -y
 
 # Ensure VBox extensions are the current version
 VBOX_VERSION=$(cat /home/vagrant/.vbox_version)

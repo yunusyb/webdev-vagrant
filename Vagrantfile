@@ -2,10 +2,11 @@
 
 # Box list
 boxes = [
-	{ :name => :cache1,     :role => 'web',     :ip => '10.10.10.10' },
-	{ :name => :web1,     :role => 'web',     :ip => '10.10.10.11' },
+	{ :name => :web,     :role => 'all',     :ip => '10.10.10.10' },
+	#{ :name => :cache1,     :role => 'web',     :ip => '10.10.10.10' },
+	#{ :name => :web1,     :role => 'web',     :ip => '10.10.10.11' },
 	#{ :name => :web2,     :role => 'web',     :ip => '10.10.10.12' },
-	{ :name => :db1,   :role => 'db',      :ip => '10.10.10.13' },
+	#{ :name => :db1,   :role => 'db',      :ip => '10.10.10.13' },
 	#{ :name => :database2,   :role => 'db',      :ip => '10.10.10.14' },
 ]
 
@@ -39,6 +40,10 @@ Vagrant::Config.run do |config|
 				config.vm.forward_port 80, 8080, :auto => true
 				config.vm.customize ["modifyvm", :id, "--cpus", 2]
 			end
+            if opts[:role] == "all"
+                config.vm.forward_port 80, 8080, :auto => true
+                config.vm.customize ["modifyvm", :id, "--cpus", 2]
+            end
 			#
 			# Set the hostname
 			config.vm.host_name = "%s.%s" % [ opts[:name].to_s, hostname.strip.to_s ]
