@@ -46,7 +46,7 @@ node /^web\d+/ {
 	        'apc.shm_size' => '128m',
 	    }
 	}
-	package { "git": ensure => "latest" }
+	package { "git": ensure => "latest", }
 }
 
 node /^db\d+/ {
@@ -68,11 +68,11 @@ node /^db\d+/ {
         port   => '3306',
         action => 'accept',
     }
-	package { "git": ensure => "latest" }
+	package { "git": ensure => "latest", }
 }
 
 node /^cache/ {
-	package { "git": ensure => "latest" }
+	package { "git": ensure => "latest", }
 	    firewall { "000 allow http":
 	        proto      => 'tcp',
 	        port     => '80',
@@ -129,8 +129,6 @@ node /^web/ {
 	        'apc.shm_size' => '128m',
 	    }
 	}
-	package { "git": ensure => "latest" }
-}
 	include mysql
 	# mysql-server config
 	class { 'mysql::server':
@@ -149,7 +147,7 @@ node /^web/ {
         port   => '3306',
         action => 'accept',
     }
-	package { "git": ensure => "latest" }
+	package { "git": ensure => "latest", }
 }
 
 node default {
