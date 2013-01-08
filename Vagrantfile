@@ -49,6 +49,7 @@ Vagrant::Config.run do |config|
 			config.vm.host_name = "%s.%s" % [ opts[:name].to_s, hostname.strip.to_s ]
 			config.vm.network :hostonly, opts[:ip]
 			#config.vm.share_folder opts[:share_folder] if opts[:share_folder]
+			#config.vm.share_folder "server", "/server", "files/server"
 
 			# Install and configure all the things!
 			config.vm.provision :shell do |shell|
