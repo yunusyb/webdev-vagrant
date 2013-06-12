@@ -1,69 +1,72 @@
-# vim: set ft=ruby :
+#
+# Squishymedia's Puppetized Vagrantfile
+#
 
-# Box list
-boxes = [
-	{ :name => :web,     :role => 'all',     :ip => '10.10.10.10' },
-	#{ :name => :cache1,     :role => 'web',     :ip => '10.10.10.10' },
-	#{ :name => :web1,     :role => 'web',     :ip => '10.10.10.11' },
-	#{ :name => :web2,     :role => 'web',     :ip => '10.10.10.12' },
-	#{ :name => :db1,   :role => 'db',      :ip => '10.10.10.13' },
-	#{ :name => :database2,   :role => 'db',      :ip => '10.10.10.14' },
-]
+# GETTING STARTED
+#
+# Get your vm set up:
+#   vagrant up
+# Set up hosts file on your local machine:
+#   127.0.0.1 projectname.local
+# Sync the database (if using Drupal):
+#   vagrant ssh
+#   drush sql-sync @projectname-dev @projectname-local
+# Sync uploaded files (if using Drupal):
+#   drush rsync @projectname-dev:%files @projectname-local:%files
+#
+# Visit the site at http://projectname.local:3080/
 
-# Grab local hostname
-hostname = %x[ hostname ]
+# ------------------------------------
+
+hostname = %x[ hostname -f ]
+username = %x[ whoami ]
+project  = File.basename(File.dirname(__FILE__));
 
 Vagrant::Config.run do |config|
-	# define defaults used on all boxes
-	vm_default = proc do |cnf|
-		cnf.vm.box_url = "https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box"
-		cnf.vm.box = "centos-minimal"
-		cnf.vm.customize ["modifyvm", :id, "--memory", 512]
-		# Uncomment to boot boxes with a GUI so you can see 
-		#  startup. The default is headless.
-		#cnf.vm.boot_mode = :gui
-	end
+  config.vm.box_url = "http://bastion.squishyclients.net/Centos-6.4-x86_64_puppet_2013-06-11.box"
+  config.vm.box = "Centos-6.4-x86_64_puppet_2013-06-11"
+  config.vm.customize ["modifyvm", :id, "--memory", 768]
 
-	boxes.each do |opts|
-		config.vm.define opts[:name] do |config|
-			# Set up default options
-			vm_default.call(config)
+  # fix "read-only filesystem" errors in Mac OS X
+  # see: https://github.com/mitchellh/vagrant/issues/713
+  config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+  config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/server", "1"]
 
-			# Configure network, etc.
-			#if this is a frontend cache node, map host machine port 8888 to guest port 80
-			if opts[:role] == "cache"
-				config.vm.forward_port 80, 8888, :auto => true
-				config.vm.customize ["modifyvm", :id, "--memory", 1024]
-			end
-			# if this is a webnode, map host port 8080 to guest port 80
-			if opts[:role] == "web"
-				config.vm.forward_port 80, 8080, :auto => true
-				config.vm.customize ["modifyvm", :id, "--cpus", 2]
-			end
-            if opts[:role] == "all"
-                config.vm.forward_port 80, 8080, :auto => true
-                config.vm.customize ["modifyvm", :id, "--cpus", 2]
-            end
-			#
-			# Set the hostname
-			config.vm.host_name = "%s.%s" % [ opts[:name].to_s, hostname.strip.to_s ]
-			config.vm.network :hostonly, opts[:ip]
-			#config.vm.share_folder opts[:share_folder] if opts[:share_folder]
-			#config.vm.share_folder "server", "/server", "files/server"
+  # NFS mount needs hostonly net
+  # Docs: http://docs-v1.vagrantup.com/v1/docs/host_only_networking.html
+  config.vm.network :hostonly, "10.12.34.56"
 
-			# Install and configure all the things!
-			config.vm.provision :shell do |shell|
-				shell.inline = "/vagrant/install.sh"
-			end
-		end
-	end
+  # Mount webroot
+  config.vm.share_folder "server", "/server", ".", :nfs => true
 
-	# Puppet configs
-	#config.vm.provision :puppet do |puppet|
-	#    puppet.manifests_path = "manifests"
-	#    puppet.module_path    = "modules"
-	#    puppet.manifest_file  = "default.pp"
-	#    puppet.options        = "--verbose --debug"
-	#end
+  # Forward SSH key agent over the 'vagrant ssh' connection
+  config.ssh.forward_agent = true
 
+  # Enable to launch a VirtualBox console
+  #cnf.vm.boot_mode = :gui
+
+  config.vm.host_name = "web.%s.%s" % [ project, hostname.strip.to_s ]
+
+  # Ensure a few basic packages are installed
+  config.vm.provision :shell, :path => 'vagrant/packages.sh'
+
+  # Docs: http://docs-v1.vagrantup.com/v1/docs/provisioners/puppet.html
+  config.vm.provision :puppet do |puppet|
+    # Load puppet manifests from vagrant/manifests
+    puppet.manifests_path = "vagrant/manifests"
+    puppet.manifest_file  = "default.pp"
+    puppet.module_path    = "vagrant/manifests/modules"
+    # Set $vagrant = 1 inside puppet manifests
+    puppet.facter = {
+      "vagrant" => "1",
+      "vagrant_ssh_user" => username.strip.to_s,
+    }
+    # Enable this to see the details of a puppet run
+    #puppet.options = "--verbose --debug"
+  end
+
+  config.vm.forward_port 80,   8080
+  config.vm.forward_port 3306, 8006
 end
+
+# vim: set ft=ruby
