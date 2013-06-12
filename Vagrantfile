@@ -55,7 +55,7 @@ Vagrant::Config.run do |config|
     # Load puppet manifests from vagrant/manifests
     puppet.manifests_path = "vagrant/manifests"
     puppet.manifest_file  = "default.pp"
-    puppet.module_path    = "vagrant/manifests/modules"
+    puppet.module_path    = "vagrant/modules"
     # Set $vagrant = 1 inside puppet manifests
     puppet.facter = {
       "vagrant" => "1",
