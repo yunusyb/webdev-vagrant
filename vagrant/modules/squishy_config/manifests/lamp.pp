@@ -1,7 +1,7 @@
 class squishy_config::lamp {
   include 'squishy_config::mysql'
   include 'squishy_config::apache'
-  
+
   include 'squishy_config::apc_ini'
 
   # add mysql bindings for PHP
@@ -9,7 +9,7 @@ class squishy_config::lamp {
   class { 'apache::mod::php':
     require => Class['squishy_config::apache'],
   }
-  
+
   # PHP ini
   augeas { '/etc/php.ini':
     notify  => Service['httpd'],
@@ -21,7 +21,6 @@ class squishy_config::lamp {
       'set upload_max_filesize 1024M',
     ],
   }
-  
 
   $php_packages = $osfamily ? {
     'RedHat' => [

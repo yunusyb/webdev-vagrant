@@ -1,4 +1,5 @@
 /**
+
  * Basic system setup for running Drupal sites.
  *
  * Does not actually download Drupal; it's assumed you have this in git.
@@ -9,6 +10,8 @@ class squishy_config::drupal {
 
   Exec { path => "/usr/bin/" }
 
+  pear::package { "PEAR": }
+
   pear::package { "drush":
     version => "5.9.0",
     repository => "pear.drush.org",
@@ -17,6 +20,7 @@ class squishy_config::drupal {
   # uploadprogress (a three-part dance)
   pear::package { "uploadprogress":
     repository => "pecl.php.net",
+    require => Pear::Package['PEAR']
   }
 
   file { '/etc/php.d/uploadprogress.ini':
@@ -33,10 +37,6 @@ class squishy_config::drupal {
   }
 
   # memcache (a three-part dance)
-  pear::package { "memcache":
-    repository => "pecl.php.net",
-  }
-
   augeas { 'memcache':
     context => "/files/etc/php.d/memcache.ini/.anon",
     changes => [
@@ -47,6 +47,6 @@ class squishy_config::drupal {
 
   file { '/etc/php.d/memcache.ini':
     ensure => present,
-    require => Pear::Package['memcache'],
+    require => Package['php-pecl-memcache'],
   }
 }

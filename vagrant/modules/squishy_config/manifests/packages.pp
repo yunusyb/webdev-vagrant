@@ -23,9 +23,6 @@ package { "cscope":
 package { "ctags":
     ensure => "latest",
 }
-package { "cvs":
-    ensure => "latest",
-}
 package { "diffstat":
     ensure => "latest",
 }
