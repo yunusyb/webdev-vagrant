@@ -17,7 +17,7 @@ class squishy_config::drupal {
     repository => "pear.drush.org",
   }
 
-  # uploadprogress (a three-part dance)
+  /** # uploadprogress (a three-part dance)
   pear::package { "uploadprogress":
     repository => "pecl.php.net",
     require => Pear::Package['PEAR']
@@ -35,7 +35,7 @@ class squishy_config::drupal {
     ],
     require => File['/etc/php.d/uploadprogress.ini'],
   }
-
+  **/
   # memcache (a three-part dance)
   augeas { 'memcache':
     context => "/files/etc/php.d/memcache.ini/.anon",
@@ -47,6 +47,6 @@ class squishy_config::drupal {
 
   file { '/etc/php.d/memcache.ini':
     ensure => present,
-    #require => Package['php-pecl-memcached'],
+    #require => Package['php-pecl-memcache'],
   }
 }
