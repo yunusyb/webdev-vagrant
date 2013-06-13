@@ -41,7 +41,7 @@ Configuration details
 Usage
 ==============
 
-* To start up the virtual machine, run "vagrant up" in the same directory as the Vagrantfile config file. As soon as it's booted you should be able to hit http://10.10.10.10 and see a placeholder index page.
+* To start up the virtual machine, run "vagrant up" in the same directory as the Vagrantfile config file. As soon as it's booted you should be able to hit http://localhost:8080 and see whatever is in the {reporoot}/htdocs directory.
 * To access the virtual machine, run "vagrant ssh".  That will log you into the virtual machine as the user "vagrant".
 * To shut the machine down, run "vagrant halt".  This gracefully shuts the machine down, retaining whatever changes you've made.
 * To delete the virtual machine, run "vagrant destroy".  This will completely erase the virtual machine and delete any changes you've made.
@@ -50,4 +50,5 @@ Basically, once you've run "vagrant up" the VM should only need you to check out
 
 Credits
 ==============
+A big thanks to Evan Heidtmann (https://github.com/ezheidtmann) for taking my vague, badly-implemented idea and making it actually *work*.  The base box and most of the Puppet and configuration scripts are his work.
 Huge chunks shamelessly stolen from a gist posted by David Lutz (https://github.com/dlutzy): https://gist.github.com/2469037/646a2b99656ef68eba87cec3ecec96d2d581f68d
