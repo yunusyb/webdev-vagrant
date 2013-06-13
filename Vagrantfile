@@ -26,7 +26,7 @@ Vagrant::Config.run do |config|
   config.vm.box_url = "http://bastion.squishyclients.net/Centos-6.4-x86_64_puppet_2013-06-11.box"
   config.vm.box = "Centos-6.4-x86_64_puppet_2013-06-11"
   config.vm.customize ["modifyvm", :id, "--memory", 1024]
-  cnf.vm.customize ["modifyvm", :id, "--cpus", 2]
+  config.vm.customize ["modifyvm", :id, "--cpus", 2]
 
   # fix "read-only filesystem" errors in Mac OS X
   # see: https://github.com/mitchellh/vagrant/issues/713
