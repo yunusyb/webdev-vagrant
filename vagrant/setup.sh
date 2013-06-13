@@ -1,22 +1,25 @@
 #!/bin/bash
 
-# HOWTO add another multisite:
-# 1) Add "CREATE DATABASE ..."
-# 2) Add sitename to "for site in ..."
-
+# MySQL doesn't like "-" in database names, so replace with underscores
+projectname=${1//[ -]/_}
 # database
 mysql <<EOF
-CREATE DATABASE IF NOT EXISTS vagrant_projectname;
+CREATE DATABASE IF NOT EXISTS vagrant_$projectname;
 EOF
 
 # add copies of vagrant-specific settings.php
-for site in wtg btw; do
-  if [ ! -f /server/htdocs/sites/$site/settings.php ]; then
-    cp /vagrant/vagrant/settings.php "/server/htdocs/sites/$site/"
-    chmod -R 777 "/server/htdocs/sites/$site/files"
-    service httpd restart
+if [ ! -f /server/htdocs/sites/$projectname/settings.php ]; then
+  if [ ! -d /server/htdocs/sites/$projectname ]; then
+    mkdir "/server/htdocs/sites/$projectname/"
   fi
-done
+  cp /vagrant/vagrant/settings.php "/server/htdocs/sites/$projectname/"
+  if [ ! -d /server/htdocs/sites/$projectname/files]; then
+    chmod -R 777 "/server/htdocs/sites/$projectname/files"
+  fi
+  # make $projectname and $1 both available as sitenames to Drupal
+  ln -s /server/htdocs/sites/$projectname /server/htdocs/sites/$1
+  service httpd restart
+fi
 
 # make sure vagrant ssh puts us in the drupal directory
 if ! grep -iq "^cd /server/htdocs" ~vagrant/.bashrc; then

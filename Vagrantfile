@@ -25,7 +25,8 @@ project  = File.basename(File.dirname(__FILE__));
 Vagrant::Config.run do |config|
   config.vm.box_url = "http://bastion.squishyclients.net/Centos-6.4-x86_64_puppet_2013-06-11.box"
   config.vm.box = "Centos-6.4-x86_64_puppet_2013-06-11"
-  config.vm.customize ["modifyvm", :id, "--memory", 768]
+  config.vm.customize ["modifyvm", :id, "--memory", 1024]
+  cnf.vm.customize ["modifyvm", :id, "--cpus", 2]
 
   # fix "read-only filesystem" errors in Mac OS X
   # see: https://github.com/mitchellh/vagrant/issues/713
@@ -61,11 +62,12 @@ Vagrant::Config.run do |config|
       "vagrant" => "1",
       "vagrant_ssh_user" => username.strip.to_s,
     }
+    puppet.options = "--hiera_config /server/vagrant/hiera.yaml"
     # Enable this to see the details of a puppet run
     #puppet.options = "--verbose --debug"
   end
 
-  config.vm.provision :shell, :path => 'vagrant/setup.sh'
+  config.vm.provision :shell, :path => 'vagrant/setup.sh', :args => project
 
   config.vm.forward_port 80,   8080
   config.vm.forward_port 3306, 8006
