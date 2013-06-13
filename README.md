@@ -16,7 +16,6 @@ Installation
 
 * Clone this repository.  It provides the root of a new project repository.
 * Put your project webroot in the {reporoot}/htdocs directory
-  * For Drupal projects, I recommend putting Drupal core in {reporoot}/core and symlinking the sites directory in from {reporoot}/data and then symlinking htdocs in from the core Drupal root.  This makes it a bit easier to do Drupal upgrades, etc.
 * We haven't included some required puppet modules.  We're working on how best to include them, but for now you'll want to do the following from the repository root:
 <pre>
 cd vagrant/modules
@@ -37,7 +36,6 @@ Configuration details
 * The 'vagrant' user is set to have full sudo rights.
 * The root user on the MySQL server is preconfigured and the credentials are stored in the vagrant user's .my.cnf, so you should be able to just run "mysql" as the vagrant user and be logged in on the MySQL console as root.
 * The directory containing the Vagrantfile config file and the rest of this repository (including your project webroot) on your local machine is mounted on the virtual machine in "/server" to facilitate moving files to and from the virtual machine.
-*  Some Drupal-specific configuration is done by Puppet and the setup.php script (installing drush, Drupal config files, etc.), so if you're using this for a non-Drupal project you may want to comment out much  of (or completely disable) the setup.php script.
 
 Usage
 ==============
