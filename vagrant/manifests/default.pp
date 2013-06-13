@@ -34,3 +34,8 @@ augeas { 'ssh_config':
   ],
   require => File['/usr/share/augeas/lenses/ssh.aug'],
 }
+
+# vagrant boxes don't need iptables
+service { 'iptables':
+  ensure => stopped,
+}

@@ -11,9 +11,5 @@ if [ ! -f ~vagrant/.ssh/config ] ; then
 	touch ~vagrant/.ssh/config
 fi
 
-#if ! iptables-save | grep -- '--dport 80' > /dev/null; then
-#  iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
-#fi
-
-service httpd restart > /dev/null
-puppet resource service iptables ensure=stopped > /dev/null
+# TODO: Debug possible segfaulting httpd; uncomment for a quick fix.
+# service httpd restart
