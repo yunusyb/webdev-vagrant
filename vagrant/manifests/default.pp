@@ -11,9 +11,9 @@ apache::vhost { 'vagrant':
 }
 
 # this directive ensures that apache::vhost doesn't clobber our docroot.
-file { '/server/htdocs':
-  ensure => 'link',
-}
+#file { '/server/htdocs':
+#  ensure => 'link',
+#}
 
 # a few vagrant-specific php.ini settings
 augeas { 'vagrant_php.ini':

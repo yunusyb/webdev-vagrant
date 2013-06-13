@@ -15,4 +15,5 @@ fi
 #  iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
 #fi
 
-service iptables stop
+service httpd restart > /dev/null
+puppet resource service iptables ensure=stopped > /dev/null
