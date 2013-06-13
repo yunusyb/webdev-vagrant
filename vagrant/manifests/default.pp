@@ -9,12 +9,13 @@ apache::vhost { 'vagrant':
   docroot => '/server/htdocs',
 }
 
-# this directive ensures that apache::vhost doesn't clobber our docroot.
+# Ensure that apache::vhost doesn't clobber our docroot.
+# Alternately, you can use `link` or `directory` if you want to be explicit.
 file { '/server/htdocs':
-  ensure => directory,
+  ensure => present,
 }
 
-# a few vagrant-specific php.ini settings
+# Enable development settings in php.ini
 augeas { 'vagrant_php.ini':
   context => "/files/etc/php.ini",
   changes => [
