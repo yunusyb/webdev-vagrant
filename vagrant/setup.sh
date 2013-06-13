@@ -6,19 +6,17 @@
 
 # database
 mysql <<EOF
-CREATE DATABASE IF NOT EXISTS vagrant_drupal;
+CREATE DATABASE IF NOT EXISTS vagrant_projectname;
 EOF
 
 # add copies of vagrant-specific settings.php
-for site in projectname; do
+for site in wtg btw; do
   if [ ! -f /server/htdocs/sites/$site/settings.php ]; then
     cp /vagrant/vagrant/settings.php "/server/htdocs/sites/$site/"
     chmod -R 777 "/server/htdocs/sites/$site/files"
+    service httpd restart
   fi
 done
-
-# fix broken locale/LANG warning
-sudo update-locale LC_ALL=en_US.UTF-8
 
 # make sure vagrant ssh puts us in the drupal directory
 if ! grep -iq "^cd /server/htdocs" ~vagrant/.bashrc; then
@@ -30,4 +28,8 @@ fi
 
 if [ ! -f ~vagrant/.ssh/config ] ; then
 	touch ~vagrant/.ssh/config
+fi
+
+if ! iptables-save | grep -- '--dport 80' > /dev/null; then
+  iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
 fi
