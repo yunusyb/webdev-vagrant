@@ -47,6 +47,6 @@ class squishy_config::drupal {
 
   file { '/etc/php.d/memcache.ini':
     ensure => present,
-    require => Package['php-pecl-memcache'],
+    #require => Package['php-pecl-memcached'],
   }
 }

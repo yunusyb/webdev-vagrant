@@ -7,5 +7,5 @@ packages="$packages iptables git pwgen screen bison byass cscope ctags diffstat 
 
 if ! rpm -q $packages > /dev/null; then
   yum install -q -y $packages
-  #pear channel-update pecl.php.net
+  pear channel-update pecl.php.net
 fi
