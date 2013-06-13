@@ -6,9 +6,9 @@ Creates a set of VirtualBox machines on your local machine pre-configured with A
 Requirements
 ==============
 
-VirtualBox version 4.2.4 or newer - https://www.virtualbox.org/wiki/Downloads
-VirtualBox extensions - http://download.virtualbox.org/virtualbox/4.2.4/Oracle_VM_VirtualBox_Extension_Pack-4.2.4-81684.vbox-extpack
-Vagrant version 1.0.5 or newer - http://vagrantup.com/
+VirtualBox version 4.2.10 or newer - https://www.virtualbox.org/wiki/Downloads
+VirtualBox extensions 4.2.10 or newer - http://download.virtualbox.org/virtualbox/4.2.10
+Vagrant version 1.0.7 or newer - http://vagrantup.com/
 A 64bit-capable processor and operating system (OS X 10.6 or newer is fine)
 
 Configuration details
@@ -37,5 +37,3 @@ Basically, once you've run "vagrant up" the VM should only need you to check out
 Credits
 ==============
 Huge chunks shamelessly stolen from a gist posted by David Lutz (https://github.com/dlutzy): https://gist.github.com/2469037/646a2b99656ef68eba87cec3ecec96d2d581f68d
-=======
-Creates a set of VirtualBox machines on your local machine pre-configured with Apache, PHP, MySQL.
