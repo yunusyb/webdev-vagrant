@@ -34,5 +34,7 @@ if [ ! -f ~vagrant/.ssh/config ] ; then
 fi
 
 #if ! iptables-save | grep -- '--dport 80' > /dev/null; then
-  iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+#  iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
 #fi
+
+service iptables stop
