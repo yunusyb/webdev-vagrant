@@ -65,6 +65,8 @@ Vagrant::Config.run do |config|
     #puppet.options = "--verbose --debug"
   end
 
+  config.vm.provision :shell, :path => 'vagrant/setup.sh'
+
   config.vm.forward_port 80,   8080
   config.vm.forward_port 3306, 8006
 end
