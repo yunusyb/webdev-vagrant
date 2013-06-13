@@ -33,6 +33,6 @@ if [ ! -f ~vagrant/.ssh/config ] ; then
 	touch ~vagrant/.ssh/config
 fi
 
-if ! iptables-save | grep -- '--dport 80' > /dev/null; then
+#if ! iptables-save | grep -- '--dport 80' > /dev/null; then
   iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
-fi
+#fi
