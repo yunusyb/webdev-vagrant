@@ -30,7 +30,7 @@ git clone git@github.com:ezheidtmann/puppet-pear.git pear
 Configuration details
 ==============
 
-* The VMs are running CentOS 6, Apache 2.2.15, MySQL 5.1, PHP 5.3.3.
+* The VM is running CentOS 6, Apache 2.2.15, MySQL 5.1, PHP 5.3.3.
 * The EPEL repo is enabled, so newer versions of packages are available.
 * Apache is configured to serve up /server/htdocs by default.
 * The root password is 'vagrant'.
