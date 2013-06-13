@@ -34,7 +34,7 @@ Configuration details
 * Apache is configured to serve up /server/htdocs by default.
 * The root password is 'vagrant'.
 * The 'vagrant' user is set to have full sudo rights.
-* The root user on the MySQL server is preconfigured and the credentials are stored in the vagrant user's .my.cnf, so you should be able to just run "mysql" as the vagrant user and be logged in on the MySQL console as root.
+* The root user on the MySQL server is preconfigured and the credentials are stored in the root user's .my.cnf, so you should be able to just run "sudo mysql" and be logged in on the MySQL console as root.
 * The directory containing the Vagrantfile config file and the rest of this repository (including your project webroot) on your local machine is mounted on the virtual machine in "/server" to facilitate moving files to and from the virtual machine.
 
 Usage
