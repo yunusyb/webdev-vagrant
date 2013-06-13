@@ -5,6 +5,6 @@
 packages="php php-mysql php-gd php-pdo php-xml php-mbstring php-pecl-apc php-pecl-memcache php-devel pcre-devel httpd-devel memcached php-pear-DB iptables git pwgen screen bison byass cscope ctags diffstat doxygen flex gcc gcc-c++ gcc-gfortran gettext indent intltool patch patchutils subversion swig systemtap tig redhat-rpm-config rpm-build system-config-firewall openssl-devel pam-devel augeas"
 
 if ! rpm -q $packages > /dev/null; then
-  yum install -q -y $packages
-  pear channel-update pecl.php.net
+  yum install -q -y $packages > /dev/null
+  pear channel-update pecl.php.net > /dev/null
 fi
