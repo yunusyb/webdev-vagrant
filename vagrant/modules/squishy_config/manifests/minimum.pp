@@ -2,7 +2,6 @@ class squishy_config::minimum {
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
   class {'epel': } 
-  class {'squishy_config::packages': }
   class {'squishy_config::shell_prompt': }
   class {'squishy_config::selinux': }
 
@@ -14,8 +13,6 @@ class squishy_config::minimum {
     group => root,
     source => "puppet:///modules/squishy_config/ssh.aug"
   }
-
-  package { 'man': }
 
   # Vagrant takes care of users, ssh, and puppet configuration, so we
   # only set these things up if we're on a real server.

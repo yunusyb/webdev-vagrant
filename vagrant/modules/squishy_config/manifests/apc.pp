@@ -1,5 +1,10 @@
-class squishy_config::apc_ini {
+class squishy_config::apc {
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
+
+  package { "php-pecl-apc":
+    ensure => latest,
+    before => Exec["fix-the-apc.ini"],
+  }
 
   augeas { "apc.ini" :
     notify  => Service['httpd'],

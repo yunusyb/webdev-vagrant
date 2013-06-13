@@ -2,7 +2,7 @@ class squishy_config::lamp {
   include 'squishy_config::mysql'
   include 'squishy_config::apache'
 
-  include 'squishy_config::apc_ini'
+  include 'squishy_config::apc'
 
   # add mysql bindings for PHP
   class { 'mysql::php': }
@@ -53,5 +53,6 @@ class squishy_config::lamp {
     ],
   }
 
+  # TODO: do this without breaking if other manifests declare these packages.
   #package { $php_packages: ensure => 'installed' }
 }
