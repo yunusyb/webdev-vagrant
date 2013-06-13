@@ -133,9 +133,10 @@ class mysql::config(
     recurse => $purge_conf_dir,
     purge   => $purge_conf_dir,
   }
-  file { $config_file:
-    content => template('mysql/my.cnf.erb'),
-    mode    => '0644',
+  if ! defined(File[$config_file]) {
+    file { $config_file:
+      content => template('mysql/my.cnf.erb'),
+      mode    => '0644',
+    }
   }
-
 }
