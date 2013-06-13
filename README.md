@@ -18,25 +18,26 @@ Installation
 * Put your project webroot in the {reporoot}/htdocs directory
   * For Drupal projects, I recommend putting Drupal core in {reporoot}/core and symlinking the sites directory in from {reporoot}/data and then symlinking htdocs in from the core Drupal root.  This makes it a bit easier to do Drupal upgrades, etc.
 * We haven't included some required puppet modules.  We're working on how best to include them, but for now you'll want to do the following from the repository root:
-    cd vagrant/modules
-    git clone git@github.com:puppetlabs/puppetlabs-apache.git apache
-    git clone git@github.com:ripienaar/puppet-concat.git concat
-    git clone git@github.com:stahnma/puppet-module-epel.git epel
-    git clone git@github.com:puppetlabs/puppetlabs-mysql.git mysql
-    git clone git@github.com:ezheidtmann/puppet-pear.git pear
+<code>
+cd vagrant/modules
+git clone git@github.com:puppetlabs/puppetlabs-apache.git apache
+git clone git@github.com:ripienaar/puppet-concat.git concat
+git clone git@github.com:stahnma/puppet-module-epel.git epel
+git clone git@github.com:puppetlabs/puppetlabs-mysql.git mysql
+git clone git@github.com:ezheidtmann/puppet-pear.git pear
+</code>
 
 Configuration details
 ==============
 
 * The VMs are running CentOS 6, Apache 2.2.15, MySQL 5.1, PHP 5.3.3.
-* The IUS repo is enabled, so newer versions of packages are available (i.e. MySQL 5.5).
-* The VMs are pre-configured to respond on the IP address range 10.10.10.0/24.
+* The EPEL repo is enabled, so newer versions of packages are available.
 * Apache is configured to serve up /server/htdocs by default.
 * The root password is 'vagrant'.
 * The 'vagrant' user is set to have full sudo rights.
 * The root user on the MySQL server is preconfigured and the credentials are stored in the vagrant user's .my.cnf, so you should be able to just run "mysql" as the vagrant user and be logged in on the MySQL console as root.
-* A default "squishydev" database is created with the username and password both set to "squishydev".
-* The directory containing the Vagrantfile config file on your machine is mounted on the virtual machine in "/vagrant" to facilitate moving files to and from the virtual machine.
+* The directory containing the Vagrantfile config file and the rest of this repository (including your project webroot) on your local machine is mounted on the virtual machine in "/server" to facilitate moving files to and from the virtual machine.
+*  Some Drupal-specific configuration is done by Puppet and the setup.php script (installing drush, Drupal config files, etc.), so if you're using this for a non-Drupal project you may want to comment out much  of (or completely disable) the setup.php script.
 
 Usage
 ==============
@@ -51,4 +52,5 @@ Basically, once you've run "vagrant up" the VM should only need you to check out
 Credits
 ==============
 A big thanks to Evan Heidtmann (https://github.com/ezheidtmann) for taking my vague, badly-implemented idea and making it actually *work*.  The base box and most of the Puppet and configuration scripts are his work.
+
 Huge chunks shamelessly stolen from a gist posted by David Lutz (https://github.com/dlutzy): https://gist.github.com/2469037/646a2b99656ef68eba87cec3ecec96d2d581f68d
