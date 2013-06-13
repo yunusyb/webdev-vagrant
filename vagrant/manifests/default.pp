@@ -2,7 +2,6 @@ $mysql_root_password = 'root'
 
 include squishy_config::minimum
 include squishy_config::lamp
-include squishy_config::drupal
 
 apache::vhost { 'vagrant':
   priority => '10',
@@ -11,9 +10,9 @@ apache::vhost { 'vagrant':
 }
 
 # this directive ensures that apache::vhost doesn't clobber our docroot.
-#file { '/server/htdocs':
-#  ensure => 'link',
-#}
+file { '/server/htdocs':
+  ensure => directory,
+}
 
 # a few vagrant-specific php.ini settings
 augeas { 'vagrant_php.ini':
