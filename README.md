@@ -18,14 +18,14 @@ Installation
 * Put your project webroot in the {reporoot}/htdocs directory
   * For Drupal projects, I recommend putting Drupal core in {reporoot}/core and symlinking the sites directory in from {reporoot}/data and then symlinking htdocs in from the core Drupal root.  This makes it a bit easier to do Drupal upgrades, etc.
 * We haven't included some required puppet modules.  We're working on how best to include them, but for now you'll want to do the following from the repository root:
-<code>
+<pre>
 cd vagrant/modules
 git clone git@github.com:puppetlabs/puppetlabs-apache.git apache
 git clone git@github.com:ripienaar/puppet-concat.git concat
 git clone git@github.com:stahnma/puppet-module-epel.git epel
 git clone git@github.com:puppetlabs/puppetlabs-mysql.git mysql
 git clone git@github.com:ezheidtmann/puppet-pear.git pear
-</code>
+</pre>
 
 Configuration details
 ==============
