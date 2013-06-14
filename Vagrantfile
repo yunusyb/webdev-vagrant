@@ -20,6 +20,8 @@
 
 hostname = %x[ hostname -f ]
 username = %x[ whoami ]
+
+# You might want to replace this with a literal project name.
 project  = File.basename(File.dirname(__FILE__));
 
 Vagrant::Config.run do |config|
@@ -48,7 +50,7 @@ Vagrant::Config.run do |config|
 
   config.vm.host_name = "web.%s.%s" % [ project, hostname.strip.to_s ]
 
-  # Ensure a few basic packages are installed. 
+  # Ensure a few basic packages are installed.
   #
   # This was an attempt at speeding up the first install due to puppet's habit
   # of running yum once for each package. But in practice, the first
@@ -71,6 +73,7 @@ Vagrant::Config.run do |config|
     #puppet.options = "--verbose --debug"
   end
 
+  # A few things still need to be done after puppet.
   config.vm.provision :shell, :path => 'vagrant/setup.sh', :args => project
 
   config.vm.forward_port 80,   8080
