@@ -1,7 +1,7 @@
 webdev-vagrant
 ==============
 
-Creates a set of VirtualBox machines on your local machine pre-configured with Apache, PHP, MySQL.
+Creates VirtualBox VM on your local machine pre-configured with Apache, PHP, MySQL. This method provides a viable alternative to MAMP or XAMPP or even a local LAMP stack, especially for diverse teams working on the same project.
 
 Requirements
 ==============
@@ -9,22 +9,20 @@ Requirements
 * VirtualBox version 4.2.10 or newer - https://www.virtualbox.org/wiki/Downloads
 * VirtualBox extensions 4.2.10 or newer - http://download.virtualbox.org/virtualbox/4.2.10
 * Vagrant version 1.0.7 or newer - http://vagrantup.com/
-* A 64bit-capable processor and operating system (OS X 10.6 or newer is fine)
+* A 64bit-capable processor and operating system (Tested with Ubuntu 12.10 and OS X 10.6)
+  * It should be possible to run on a 32bit host machine by substituting a 32bit base box, but this has not been tested. Feedback is welcome!
 
 Installation
 =============
 
-* Clone this repository.  It provides the root of a new project repository.
-* Put your project webroot in the {reporoot}/htdocs directory
-* We haven't included some required puppet modules.  We're working on how best to include them, but for now you'll want to do the following from the repository root:
-<pre>
-cd vagrant/modules
-git clone git@github.com:puppetlabs/puppetlabs-apache.git apache
-git clone git@github.com:ripienaar/puppet-concat.git concat
-git clone git@github.com:stahnma/puppet-module-epel.git epel
-git clone git@github.com:puppetlabs/puppetlabs-mysql.git mysql
-git clone git@github.com:ezheidtmann/puppet-pear.git pear
-</pre>
+* Install [vagrant 1.0.x](http://downloads.vagrantup.com/) (the 1.1 branch might work, but we haven't tested it)
+* Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+* Install [git](http://git-scm.com/downloads) if you don't have it already. If you're not familiar with git, [ensure you are](http://git-scm.com/doc).
+* Clone this repository. It provides the root of a new project repository.
+* Put your project webroot in the `{reporoot}/htdocs` directory
+* Change the git remote to drop the connection with our repository:
+
+    git remote set-url origin git@my-git-server.somewhere:myproject
 
 Configuration details
 ==============
@@ -33,22 +31,22 @@ Configuration details
 * The EPEL repo is enabled, so newer versions of packages are available.
 * Apache is configured to serve up /server/htdocs by default.
 * The root password is 'vagrant'.
-* The 'vagrant' user is set to have full sudo rights.
-* The root user on the MySQL server is preconfigured and the credentials are stored in the root user's .my.cnf, so you should be able to just run "sudo mysql" and be logged in on the MySQL console as root.
-* The directory containing the Vagrantfile config file and the rest of this repository (including your project webroot) on your local machine is mounted on the virtual machine in "/server" to facilitate moving files to and from the virtual machine.
+* The 'vagrant' user is set to have full sudo rights, no password required.
+* The root user on the MySQL server is preconfigured and the credentials are stored in the root user's .my.cnf, so you can run `sudo mysql` and be logged in on the MySQL console as root.
+* The directory containing the Vagrantfile config file and the rest of this repository (including your project webroot) on your local machine is mounted on the virtual machine in `/server` to facilitate moving files to and from the virtual machine.
 
 Usage
 ==============
 
-* To start up the virtual machine, run "vagrant up" in the same directory as the Vagrantfile config file. As soon as it's booted you should be able to hit http://localhost:8080 and see whatever is in the {reporoot}/htdocs directory.
-* To access the virtual machine, run "vagrant ssh".  That will log you into the virtual machine as the user "vagrant".
-* To shut the machine down, run "vagrant halt".  This gracefully shuts the machine down, retaining whatever changes you've made.
-* To delete the virtual machine, run "vagrant destroy".  This will completely erase the virtual machine and delete any changes you've made.
-
-Basically, once you've run "vagrant up" the VM should only need you to check out your code in the VM's /server/htdocs directory and tell it what database credentials to use to have a functional dev site up and running.
+* To start up the virtual machine, run `vagrant up` in the same directory as the Vagrantfile config file. As soon as it's booted you should be able to hit http://localhost:8080/ and see whatever is in the `{reporoot}/htdocs` directory.
+* If your application uses a MySQL database, configure your app to connect to `localhost` with the username `root` and password `root`.
+* To access the virtual machine, run `vagrant ssh`.  That will log you into the virtual machine as the user `vagrant`.
+  * In typical usage, you should only need to run database commands within the VM. All other work happens on your physical host computer.
+* To shut the machine down, run `vagrant halt`.  This gracefully shuts the machine down, retaining whatever changes you've made to the VM.
+* To delete the virtual machine, run `vagrant destroy`.  This will completely erase the virtual machine and your MySQL databases. Your `Vagrantfile`, application code, and puppet rules are all left intact.
 
 Credits
 ==============
-A big thanks to Evan Heidtmann (https://github.com/ezheidtmann) for taking my vague, badly-implemented idea and making it actually *work*.  The base box and most of the Puppet and configuration scripts are his work.
+A big thanks to Evan Heidtmann [(ezheidtmann)](https://github.com/ezheidtmann) for taking my vague, badly-implemented idea and making it actually *work*.  The base box and most of the Puppet and configuration scripts are his work.
 
-Huge chunks shamelessly stolen from a gist posted by David Lutz (https://github.com/dlutzy): https://gist.github.com/2469037/646a2b99656ef68eba87cec3ecec96d2d581f68d
+Huge chunks shamelessly stolen from a gist posted by David Lutz [(dlutzy)](https://github.com/dlutzy): https://gist.github.com/2469037/646a2b99656ef68eba87cec3ecec96d2d581f68d
