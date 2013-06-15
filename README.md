@@ -19,10 +19,7 @@ Installation
 * Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * Install [git](http://git-scm.com/downloads) if you don't have it already. If you're not familiar with git, [ensure you are](http://git-scm.com/doc).
 * Clone this repository. It provides the root of a new project repository.
-* Put your project webroot in the `{reporoot}/htdocs` directory
-* Change the git remote to drop the connection with our repository:
-
-    git remote set-url origin git@my-git-server.somewhere:myproject
+* Put your project webroot in the `{reporoot}/htdocs` directory.
 
 Configuration details
 ==============
