@@ -63,6 +63,8 @@ Vagrant::Config.run do |config|
       "vagrant_ssh_user" => username.strip.to_s,
     }
     puppet.options = "--hiera_config /server/vagrant/hiera.yaml"
+    # Send "notice" to syslog
+    puppet.options = "--logdest syslog"
     # Enable this to see the details of a puppet run
     #puppet.options = "--verbose --debug"
   end
