@@ -20,10 +20,12 @@
 
 hostname = %x[ hostname -f ]
 username = %x[ whoami ]
+
+# You might want to replace this with a literal project name.
 project  = File.basename(File.dirname(__FILE__));
 
 Vagrant::Config.run do |config|
-  config.vm.box_url = "http://bastion.squishyclients.net/Centos-6.4-x86_64_puppet_2013-06-11.box"
+  config.vm.box_url = "https://911fc3b8b8cc070da44b-76fd772d1c308d2aec785b792582b337.ssl.cf2.rackcdn.com/Centos-6.4-x86_64_puppet_2013-06-11.box"
   config.vm.box = "Centos-6.4-x86_64_puppet_2013-06-11"
   config.vm.customize ["modifyvm", :id, "--memory", 1024]
   config.vm.customize ["modifyvm", :id, "--cpus", 2]
@@ -48,8 +50,12 @@ Vagrant::Config.run do |config|
 
   config.vm.host_name = "web.%s.%s" % [ project, hostname.strip.to_s ]
 
-  # Ensure a few basic packages are installed
-  config.vm.provision :shell, :path => 'vagrant/packages.sh'
+  # Ensure a few basic packages are installed.
+  #
+  # This was an attempt at speeding up the first install due to puppet's habit
+  # of running yum once for each package. But in practice, the first
+  # provisioning is quicker without this script.
+  #config.vm.provision :shell, :path => 'vagrant/packages.sh'
 
   # Docs: http://docs-v1.vagrantup.com/v1/docs/provisioners/puppet.html
   config.vm.provision :puppet do |puppet|
@@ -69,6 +75,7 @@ Vagrant::Config.run do |config|
     #puppet.options = "--verbose --debug"
   end
 
+  # A few things still need to be done after puppet.
   config.vm.provision :shell, :path => 'vagrant/setup.sh', :args => project
 
   config.vm.forward_port 80,   8080
