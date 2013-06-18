@@ -2,7 +2,6 @@ class squishy_config::lamp {
   include 'squishy_config::mysql'
   include 'squishy_config::apache'
   include 'squishy_config::apc'
-  #include pear
 
   # add mysql bindings for PHP
   class { 'mysql::php': }
@@ -22,6 +21,9 @@ class squishy_config::lamp {
     ],
   }
 
+  # Uncomment these lines if you want some pear packages.
+  # See https://github.com/rafaelfelix/puppet-pear for usage.
+  #include pear
   #pear::package { "PEAR": }
 
   #
