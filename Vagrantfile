@@ -39,10 +39,12 @@ Vagrant::Config.run do |config|
   # Docs: http://docs-v1.vagrantup.com/v1/docs/host_only_networking.html
   config.vm.network :hostonly, "10.12.34.56"
 
-  # Mount webroot. We normally use NFS shared folders because they're several
-  # orders of magnitude faster, at least on Mac OS and Linux hosts.  But they
-  # don't work on Windows hosts and require a little host-side configuration,
-  # so they're disabled by default. To set up NFS, see the documentation here:
+  # Mount webroot.
+  #
+  # NFS shared folders are several orders of magnitude faster, but they don't
+  # work on Windows hosts, they can require a little configuration, and they
+  # require that vagrant run some tasks as root. If you want to use NFS, try
+  # enabling it here.  For more information, see:
   #
   # http://docs-v1.vagrantup.com/v1/docs/nfs.html
   #
