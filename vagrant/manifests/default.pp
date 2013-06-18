@@ -1,3 +1,4 @@
+# Our "lamp" manifest requires this external variable.
 $mysql_root_password = 'root'
 
 include squishy_config::minimum

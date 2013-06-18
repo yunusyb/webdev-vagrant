@@ -1,6 +1,4 @@
 class squishy_config::apache {
-  $httpd = $osfamily ? { 'RedHat' => 'httpd', 'Debian' => 'apache2', }
-  
   $vhosts_d = $osfamily ? {
     'RedHat' => "/etc/httpd/vhosts.d",
     'Debian' => "/etc/apache2/sites-available",
@@ -15,7 +13,7 @@ class squishy_config::apache {
   }
 
   # We have to list apache modules manually because we are turning down the
-  # default modules in the class {} block above.
+  # default modules in the block above.
   include ::apache::mod::mime
   include ::apache::mod::dir
   include ::apache::mod::rewrite

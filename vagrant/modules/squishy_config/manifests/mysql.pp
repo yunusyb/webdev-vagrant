@@ -1,4 +1,6 @@
 class squishy_config::mysql {
+  # `$mysql_server` is a custom fact derived from the contents
+  # of a file named /etc/mysql_server on the agent.
   if $mysql_server {
     case $mysql_server {
       'percona-55': {
