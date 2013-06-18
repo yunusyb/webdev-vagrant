@@ -39,8 +39,15 @@ Vagrant::Config.run do |config|
   # Docs: http://docs-v1.vagrantup.com/v1/docs/host_only_networking.html
   config.vm.network :hostonly, "10.12.34.56"
 
-  # Mount webroot
-  config.vm.share_folder "server", "/server", ".", :nfs => true
+  # Mount webroot. We normally use NFS shared folders because they're several
+  # orders of magnitude faster, at least on Mac OS and Linux hosts.  But they
+  # don't work on Windows hosts and require a little host-side configuration,
+  # so they're disabled by default. To set up NFS, see the documentation here:
+  #
+  # http://docs-v1.vagrantup.com/v1/docs/nfs.html
+  #
+  # To enable NFS, set :nfs => true here.
+  config.vm.share_folder "server", "/server", ".", :nfs => false
 
   # Forward SSH key agent over the 'vagrant ssh' connection
   config.ssh.forward_agent = true
@@ -70,9 +77,9 @@ Vagrant::Config.run do |config|
     }
     puppet.options = "--hiera_config /server/vagrant/hiera.yaml"
     # Send "notice" to syslog
-    puppet.options = "--logdest syslog"
+    puppet.options += " --logdest syslog"
     # Enable this to see the details of a puppet run
-    #puppet.options = "--verbose --debug"
+    #puppet.options += " --verbose --debug"
   end
 
   # A few things still need to be done after puppet.
