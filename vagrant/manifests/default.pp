@@ -8,6 +8,7 @@ apache::vhost { 'vagrant':
   priority => '10',
   port => '80',
   docroot => '/server/htdocs',
+  override => ['all'],
 }
 
 # Ensure that apache::vhost doesn't clobber our docroot.
