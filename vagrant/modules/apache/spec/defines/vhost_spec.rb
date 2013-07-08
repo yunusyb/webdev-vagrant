@@ -41,7 +41,7 @@ describe 'apache::vhost', :type => :define do
       it { should include_class("apache::params") }
     end
   end
-  describe 'os-idenpendent items' do
+  describe 'os-independent items' do
     let :facts do
       {
         :osfamily               => 'Debian',
@@ -278,6 +278,56 @@ describe 'apache::vhost', :type => :define do
           ],
         },
         {
+          :title    => 'should accept directory directives',
+          :attr     => 'directories',
+          :value    => [
+            {
+              'path'              => '/opt/app',
+              'allow'             => 'from rspec.org',
+              'allow_override'    => 'Lol',
+              'deny'              => 'from google.com',
+              'options'           => '-MultiViews',
+              'order'             => 'deny,yned',
+              'passenger_enabled' => 'onf',
+            },
+          ],
+          :match    => [
+            '  <Directory /opt/app>',
+            '    Allow from rspec.org',
+            '    AllowOverride Lol',
+            '    Deny from google.com',
+            '    Options -MultiViews',
+            '    Order deny,yned',
+            '    PassengerEnabled onf',
+            '  </Directory>',
+          ],
+        },
+        {
+          :title    => 'should accept directory directives with arrays',
+          :attr     => 'directories',
+          :value    => [
+            {
+              'path'              => '/opt/app',
+              'allow'             => 'from rspec.org',
+              'allow_override'    => ['AuthConfig','Indexes'],
+              'deny'              => 'from google.com',
+              'options'           => ['-MultiViews','+MultiViews'],
+              'order'             => ['deny','yned'],
+              'passenger_enabled' => 'onf',
+            },
+          ],
+          :match    => [
+            '  <Directory /opt/app>',
+            '    Allow from rspec.org',
+            '    AllowOverride AuthConfig Indexes',
+            '    Deny from google.com',
+            '    Options -MultiViews +MultiViews',
+            '    Order deny,yned',
+            '    PassengerEnabled onf',
+            '  </Directory>',
+          ],
+        },
+        {
           :title    => 'should accept multiple directories',
           :attr     => 'directories',
           :value    => [
@@ -289,6 +339,14 @@ describe 'apache::vhost', :type => :define do
             '  <Directory /opt/app>',
             '  <Directory /var/www>',
             '  <Directory /rspec/docroot>',
+          ],
+        },
+        {
+          :title => 'should contain virtual_docroot',
+          :attr  => 'virtual_docroot',
+          :value => '/not/default',
+          :match => [
+            '  VirtualDocumentRoot /not/default',
           ],
         },
       ].each do |param|
