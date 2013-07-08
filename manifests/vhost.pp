@@ -4,14 +4,11 @@
 #
 # Parameters:
 # - The $port to configure the host on
-# - The $docroot provides the DocumentationRoot variable
+# - The $docroot provides the DocumentRoot variable
+# - The $virtual_docroot provides VirtualDocumentationRoot variable
 # - The $serveradmin will specify an email address for Apache that it will
 #   display when it renders one of it's error pages
-# - The $configure_firewall option is set to true or false to specify if
-#   a firewall should be configured.
 # - The $ssl option is set true or false to enable SSL for this Virtual Host
-# - The $template option specifies whether to use the default template or
-#   override
 # - The $priority of the site
 # - The $servername is the primary name of the virtual host
 # - The $serveraliases of the site
@@ -62,6 +59,7 @@
 #
 define apache::vhost(
     $docroot,
+    $virtual_docroot    = false,
     $port               = undef,
     $ip                 = undef,
     $ip_based           = false,
@@ -69,7 +67,6 @@ define apache::vhost(
     $docroot_owner      = 'root',
     $docroot_group      = 'root',
     $serveradmin        = false,
-    $configure_firewall = true,
     $ssl                = false,
     $ssl_cert           = $apache::default_ssl_cert,
     $ssl_key            = $apache::default_ssl_key,
@@ -115,7 +112,7 @@ define apache::vhost(
   ) {
   # The base class must be included first because it is used by parameter defaults
   if ! defined(Class['apache']) {
-    fail("You must include the apache base class before using any apache defined resources")
+    fail('You must include the apache base class before using any apache defined resources')
   }
   $apache_name = $apache::params::apache_name
 
@@ -123,7 +120,6 @@ define apache::vhost(
   "${ensure} is not supported for ensure.
   Allowed values are 'present' and 'absent'.")
   validate_bool($ip_based)
-  validate_bool($configure_firewall)
   validate_bool($access_log)
   validate_bool($error_log)
   validate_bool($ssl)
@@ -272,18 +268,6 @@ define apache::vhost(
     $priority_real = '25'
   }
 
-  # Configure firewall rules
-  if $configure_firewall {
-    if ! defined(Firewall["0100-INPUT ACCEPT ${port}"]) {
-      @firewall {
-        "0100-INPUT ACCEPT ${port}":
-          action => 'accept',
-          dport  => $port,
-          proto  => 'tcp'
-      }
-    }
-  }
-
   # Check if mod_headers is required to process $request_headers
   if $request_headers {
     if ! defined(Class['apache::mod::headers']) {
@@ -299,11 +283,11 @@ define apache::vhost(
     $_directories = $directories
   } else {
     $_directories = [ {
-      path          => $docroot,
-      options       => $options,
-      allowoverride => $override,
-      order         => 'allow,deny',
-      allow         => 'from all',
+      path           => $docroot,
+      options        => $options,
+      allow_override => $override,
+      order          => 'allow,deny',
+      allow          => 'from all',
     } ]
   }
 
@@ -312,6 +296,7 @@ define apache::vhost(
   # - $servername_real
   # - $serveradmin
   # - $docroot
+  # - $virtual_docroot
   # - $options
   # - $override
   # - $logroot

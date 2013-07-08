@@ -64,6 +64,7 @@ class apache::params {
       'ssl'        => 'mod_ssl',
       'wsgi'       => 'mod_wsgi',
       'dav_svn'    => 'mod_dav_svn',
+      'xsendfile'  => 'mod_xsendfile',
     }
     $mod_libs             = {
       'php5' => 'libphp5.so',
@@ -74,7 +75,7 @@ class apache::params {
     $group            = 'www-data'
     $apache_name      = 'apache2'
     $httpd_dir        = '/etc/apache2'
-    $conf_dir         = "${httpd_dir}"
+    $conf_dir         = $httpd_dir
     $confd_dir        = "${httpd_dir}/conf.d"
     $mod_dir          = "${httpd_dir}/mods-available"
     $mod_enable_dir   = "${httpd_dir}/mods-enabled"
@@ -100,8 +101,11 @@ class apache::params {
       'python'     => 'libapache2-mod-python',
       'wsgi'       => 'libapache2-mod-wsgi',
       'dav_svn'    => 'libapache2-svn',
+      'xsendfile'  => 'libapache2-mod-xsendfile',
     }
-    $mod_libs         = {}
+    $mod_libs         = {
+      'php5' => 'libphp5.so',
+    }
     $conf_template    = 'apache/httpd.conf.erb'
   } else {
     fail("Class['apache::params']: Unsupported osfamily: ${::osfamily}")

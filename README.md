@@ -94,6 +94,17 @@ To set up a virtual host with SSL and specific SSL certificates
       ssl_key  => '/etc/ssl/fourth.example.com.key',
     }
 
+To set up a virtual host with wildcard alias for subdomain mapped to same named directory 
+`http://examle.com.loc => /var/www/example.com`
+
+    apache::vhost { 'subdomain.loc':
+      vhost_name => '*',
+      port       => '80',
+      virtual_docroot' => '/var/www/%-2+',
+      docroot          => '/var/www',
+      serveraliases    => ['*.loc',],
+    }
+
 To see a list of all virtual host parameters, [please go here](#defined-type-apachevhost). To see an extensive list of virtual host examples [please look here](#virtual-host-examples).
 
 ##Usage
@@ -233,7 +244,7 @@ There are many `apache::mod::[name]` classes within this module that can be decl
 * `negotiation`
 * `passenger`*
 * `perl`
-* `php`
+* `php` (requires [`mpm_module`](#mpm_module) set to `prefork`)
 * `prefork`*
 * `proxy`*
 * `proxy_html`
@@ -246,6 +257,7 @@ There are many `apache::mod::[name]` classes within this module that can be decl
 * `userdir`*
 * `worker`*
 * `wsgi`
+* `xsendfile`
 
 Modules noted with a * indicate that the module has settings and, thus, a template that includes parameters. These parameters control the module's configuration. Most of the time, these parameters will not require any configuration or attention.
 
@@ -257,7 +269,7 @@ Installs Apache SSL capabilities and utilizes `ssl.conf.erb` template
 
 	class { 'apache::mod::ssl': }
 
-To *use* SSL with a virtual host, you must either set the`default_ssl_vost` parameter in `apache` to 'true' or set the `ssl` parameter in `apache::vhost` to 'true'.
+To *use* SSL with a virtual host, you must either set the`default_ssl_vhost` parameter in `apache` to 'true' or set the `ssl` parameter in `apache::vhost` to 'true'.
 
 ####Defined Type: `apache::vhost`
 
@@ -313,10 +325,6 @@ For `Alias` to work, each will need a corresponding `<Directory /path/to/directo
 
 Specifies the list of things Apache will block access to. The default is an empty set, '[]'. Currently, the only option is 'scm', which blocks web access to .svn, .git and .bzr directories. To add to this, please see the [Development](#development) section.
 
-#####`configure_firewall`
-
-Specifies whether a firewall should be configured. Valid values are 'true' or 'false'.
-
 #####`custom_fragment`
 
 Pass a string of custom configuration directives to be placed at the end of the vhost configuration.
@@ -358,12 +366,12 @@ Sets an `Allow` directive as per the [Apache Core documentation](http://httpd.ap
 directory => [ { path => '/path/to/directory', allow => 'from example.org' } ],
 ```
 
-######`allowOverride`
+######`allow_override`
 
 Sets the usage of `.htaccess` files as per the [Apache core documentation](http://httpd.apache.org/docs/2.2/mod/core.html#allowoverride). Should accept in the form of a list or a string. An example:
 
 ```ruby
-directory => [ { path => '/path/to/directory', allowOverride => ['AuthConfig', 'Indexes'] } ],
+directory => [ { path => '/path/to/directory', allow_override => ['AuthConfig', 'Indexes'] } ],
 ```
 
 ######`deny`
@@ -389,12 +397,12 @@ Sets the order of processing `Allow` and `Deny` statements as per [Apache core d
 directory => [ { path => '/path/to/directory', order => 'Allow, Deny' } ],
 ```
 
-######`passengerEnabled`
+######`passenger_enabled`
 
 Sets the value for the `PassengerEnabled` directory to `on` or `off` as per the [Passenger documentation](http://www.modrails.com/documentation/Users%20guide%20Apache.html#PassengerEnabled).
 
 ```ruby
-directory => [ { path => '/path/to/directory', passengerEnabled => 'off' } ],
+directory => [ { path => '/path/to/directory', passenger_enabled => 'off' } ],
 ```
 
 **Note:** This directive requires `apache::mod::passenger` to be active, Apache may not start with an unrecognised directive without it.
@@ -691,11 +699,11 @@ Set up a mix of SSL and non-SSL vhosts at the same domain
 Configure a vhost to redirect non-SSL connections to SSL
 
     apache::vhost { 'sixteenth.example.com non-ssl':
-      servername   => 'sixteenth.example.com',
-      port         => '80',
-      docroot      => '/var/www/sixteenth',
-      rewrite_cond => '%{HTTPS} off',
-      rewrite_rule => '(.*) https://%{HTTPS_HOST}%{REQUEST_URI}',
+      servername      => 'sixteenth.example.com',
+      port            => '80',
+      docroot         => '/var/www/sixteenth',
+      redirect_status => 'permanent'
+      redirect_dest   => 'https://sixteenth.example.com/' 
     }
     apache::vhost { 'sixteenth.example.com ssl':
       servername => 'sixteenth.example.com',
@@ -799,6 +807,22 @@ Enables named-based hosting of a virtual host
 
 Declaring this defined type will add all `NameVirtualHost` directives to the `ports.conf` file in the Apache https configuration directory. `apache::namevirtualhost` titles should always take the form of: `*`, `*:<port>`, `_default_:<port>`, `<ip>`, or `<ip>:<port>`.
 
+####Defined Type: `apache::balancermember`
+
+Define members of a proxy_balancer set (mod_proxy_balancer). Very useful when using exported resources.
+
+On every app server you can export a balancermember like this:
+
+      @@apache::balancermember { "${::fqdn}-puppet00":
+        balancer_cluster => 'puppet00',
+        url              => "ajp://${::fqdn}:8009"
+        options          => ['ping=5', 'disablereuse=on', 'retry=5', 'ttl=120'],
+      }
+
+And on the proxy itself you create the balancer cluster using the defined type apache::balancer:
+
+      apache::balancer { 'puppet00': }
+
 ###Templates
 
 The Apache module relies heavily on templates to enable the `vhost` and `apache::mod` defined types. These templates are built based on Facter facts around your operating system. Unless explicitly called out, most templates are not meant for configuration.
@@ -809,11 +833,24 @@ This has been tested on Ubuntu Precise, Debian Wheezy, and CentOS 5.8.
 
 ##Development
 
+### Overview
+
 Puppet Labs modules on the Puppet Forge are open projects, and community contributions are essential for keeping them great. We can’t access the huge number of platforms and myriad of hardware, software, and deployment configurations that Puppet is intended to serve.
 
 We want to keep it as easy as possible to contribute changes so that our modules work in your environment. There are a few guidelines that we need contributors to follow so that we can have a chance of keeping on top of things.
 
 You can read the complete module contribution guide [on the Puppet Labs wiki.](http://projects.puppetlabs.com/projects/module-site/wiki/Module_contributing)
+
+### Running tests
+
+This project contains tests for both [rspec-puppet](http://rspec-puppet.com/) and [rspec-system](https://github.com/puppetlabs/rspec-system) to verify functionality. For in-depth information please see their respective documentation.
+
+Quickstart:
+
+    gem install bundler
+    bundle install
+    bundle exec rake spec
+    bundle exec rake spec:system
 
 ##Copyright and License
 
