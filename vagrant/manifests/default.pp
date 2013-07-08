@@ -8,9 +8,11 @@ include squishy_config::drupal
 apache::vhost { 'vagrant':
   priority    => '10',
   port        => '80',
-  docroot     => '/server/htdocs'
+  docroot     => '/server/htdocs',
   override    => ['all'],
-  directories => [ { path => [ '/server/htdocs', allow_override => ['All'] ] }, ]
+  directories => [
+    { path => [ '/server/htdocs', allow_override => ['All'] ] },
+  ],
   custom_fragment => "<Directory ~ 'sites/[^/]+/files/'>
     AllowOverride None
     #Prevent executable PHP in uploaded files
