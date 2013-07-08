@@ -9,14 +9,14 @@
 # Sample Usage:
 #  include epel
 #
-class epel inherits epel::params {
+class epel ( $proxy = $epel::params::proxy ) inherits epel::params {
 
-  if $::osfamily == 'RedHat' and $::operatingsystem != 'Fedora' {
+  if $::osfamily == 'RedHat' and $::operatingsystem !~ /Fedora|Amazon/ {
 
     yumrepo { 'epel-testing':
-      baseurl        => "http://download.fedora.redhat.com/pub/epel/testing/${::os_maj_version}/${::architecture}",
+      baseurl        => "http://download.fedoraproject.org/pub/epel/testing/${::os_maj_version}/${::architecture}",
       failovermethod => 'priority',
-      proxy          => $epel::params::proxy,
+      proxy          => $proxy,
       enabled        => '0',
       gpgcheck       => '1',
       gpgkey         => "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-${::os_maj_version}",
@@ -24,9 +24,9 @@ class epel inherits epel::params {
     }
 
     yumrepo { 'epel-testing-debuginfo':
-      baseurl        => "http://download.fedora.redhat.com/pub/epel/testing/${::os_maj_version}/${::architecture}/debug",
+      baseurl        => "http://download.fedoraproject.org/pub/epel/testing/${::os_maj_version}/${::architecture}/debug",
       failovermethod => 'priority',
-      proxy          => $epel::params::proxy,
+      proxy          => $proxy,
       enabled        => '0',
       gpgcheck       => '1',
       gpgkey         => "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-${::os_maj_version}",
@@ -34,9 +34,9 @@ class epel inherits epel::params {
     }
 
     yumrepo { 'epel-testing-source':
-      baseurl        => "http://download.fedora.redhat.com/pub/epel/testing/${::os_maj_version}/SRPMS",
+      baseurl        => "http://download.fedoraproject.org/pub/epel/testing/${::os_maj_version}/SRPMS",
       failovermethod => 'priority',
-      proxy          => $epel::params::proxy,
+      proxy          => $proxy,
       enabled        => '0',
       gpgcheck       => '1',
       gpgkey         => "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-${::os_maj_version}",
@@ -46,7 +46,7 @@ class epel inherits epel::params {
     yumrepo { 'epel':
       mirrorlist     => "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-${::os_maj_version}&arch=${::architecture}",
       failovermethod => 'priority',
-      proxy          => $epel::params::proxy,
+      proxy          => $proxy,
       enabled        => '1',
       gpgcheck       => '1',
       gpgkey         => "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-${::os_maj_version}",
@@ -56,7 +56,7 @@ class epel inherits epel::params {
     yumrepo { 'epel-debuginfo':
       mirrorlist     => "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-debug-${::os_maj_version}&arch=${::architecture}",
       failovermethod => 'priority',
-      proxy          => $epel::params::proxy,
+      proxy          => $proxy,
       enabled        => '0',
       gpgcheck       => '1',
       gpgkey         => "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-${::os_maj_version}",
@@ -65,7 +65,7 @@ class epel inherits epel::params {
 
     yumrepo { 'epel-source':
       mirrorlist     => "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-source-${::os_maj_version}&arch=${::architecture}",
-      proxy          => $epel::params::proxy,
+      proxy          => $proxy,
       failovermethod => 'priority',
       enabled        => '0',
       gpgcheck       => '1',
@@ -82,8 +82,20 @@ class epel inherits epel::params {
     }
 
     epel::rpm_gpg_key{ "EPEL-${::os_maj_version}":
-      path => "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-${::os_maj_version}"
+      path   => "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-${::os_maj_version}",
+      before => Yumrepo['epel','epel-source','epel-debuginfo','epel-testing','epel-testing-source','epel-testing-debuginfo'],
     }
+
+  } elsif $::osfamily == 'RedHat' and $::operatingsystem == 'Amazon' {
+
+    # EPEL is already installed in all AWS Linux AMI
+    # we just need to enable it
+    yumrepo { 'epel':
+      enabled  => 1,
+      gpgcheck => 1,
+
+    }
+
   } else {
       notice ("Your operating system ${::operatingsystem} will not have the EPEL repository applied")
   }
