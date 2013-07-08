@@ -6,8 +6,6 @@ class squishy_config::ssh {
       "set LogLevel VERBOSE",
       # permit root logins only using publickey
       "set PermitRootLogin without-password",
-      # set port 22421
-      "set Port 22421",
       # disable X11 forwarding
       "set X11Forwarding no",
       # Agent forwarding for gitolite
