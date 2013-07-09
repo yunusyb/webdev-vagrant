@@ -48,9 +48,6 @@ Vagrant::Config.run do |config|
 
   config.vm.host_name = "web.%s.%s" % [ project, hostname.strip.to_s ]
 
-  # Ensure a few basic packages are installed
-  config.vm.provision :shell, :path => 'vagrant/packages.sh'
-
   # Docs: http://docs-v1.vagrantup.com/v1/docs/provisioners/puppet.html
   config.vm.provision :puppet do |puppet|
     # Load puppet manifests from vagrant/manifests
