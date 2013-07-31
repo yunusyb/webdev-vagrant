@@ -3,6 +3,7 @@ $mysql_root_password = 'root'
 
 include squishy_config::minimum
 include squishy_config::lamp
+include squishy_config::mysql
 
 apache::vhost { 'vagrant':
   priority => '10',

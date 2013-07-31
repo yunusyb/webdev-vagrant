@@ -1,7 +1,7 @@
 class squishy_config::minimum {
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
-  class {'epel': } 
+  class {'epel': }
   class {'squishy_config::shell_prompt': }
   class {'squishy_config::selinux': }
 
@@ -19,20 +19,20 @@ class squishy_config::minimum {
   if (!$vagrant) {
     class {'squishy_config::users': }
     class {'squishy_config::ssh': }
-    
-    # set puppet master
-    augeas { "puppet.conf":
-      context => "/files/etc/puppet/puppet.conf",
-      changes => [
-        "set agent/server puppet.squishyclients.net"
-      ]
-    }
 
-    cron { "puppet":
-      command => "/usr/bin/puppet agent --onetime --no-daemonize --logdest syslog > /dev/null 2>&1",
-      user => "root",
-      minute => fqdn_rand( 60 ),
-      ensure => present,
-    }
+    # set puppet master
+    #augeas { "puppet.conf":
+    #  context => "/files/etc/puppet/puppet.conf",
+    #  changes => [
+    #    "set agent/server puppet.squishyclients.net"
+    #  ]
+    #}
+
+    #cron { "puppet":
+    #  command => "/usr/bin/puppet agent --onetime --no-daemonize --logdest syslog > /dev/null 2>&1",
+    #  user => "root",
+    #  minute => fqdn_rand( 60 ),
+    #  ensure => present,
+    #}
   }
 }
