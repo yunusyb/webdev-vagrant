@@ -1,5 +1,5 @@
 /**
- * Definition: squishy_v1::drupal_site
+ * Definition: squishy_config::drupal_site
  *
  * Currently very limited in scope; this is all we do:
  *  * Ensure pear and drush are installed (via drupal_deps)
@@ -7,7 +7,7 @@
  *  * Create a matching settings.php
  *  * Ensure the files directory is writable
  */
-define squishy_v1::drupal_site(
+define squishy_config::drupal_site(
   $root      = undef,
   $site_name = $title,
   $db_user   = $title,
@@ -18,10 +18,10 @@ define squishy_v1::drupal_site(
   $settings_file = undef,
   $writable_dirs = undef,
 ){
-  include squishy_v1::drupal_deps
+  include squishy_config::drupal_deps
 
   if ! $root {
-    fail("You must specify a Drupal root for Squishy_v1::Drupal_site[$site_name]")
+    fail("You must specify a Drupal root for Squishy_config::Drupal_site[$site_name]")
   }
 
   if $settings_file {
@@ -60,7 +60,7 @@ define squishy_v1::drupal_site(
 
   # create settings.php using the database credentials specified
   file { $_settings_file:
-    content => template('squishy_v1/settings.php.erb'),
+    content => template('squishy_config/settings.php.erb'),
     group => $vagrant ? { 1 => undef, default => 'squishydev' },
     mode => 'ug+w,o-w',
   }

@@ -4,8 +4,8 @@
  * Does not actually download Drupal; it's assumed you have this in git.
   $repo_url, 'ssh://git@git.squishyclients.net:22421/
  */
-class squishy_v1::drupal_deps {
-  include squishy_v1::lamp
+class squishy_config::drupal_deps {
+  include squishy_config::lamp
   include pear
 
   Exec { path => "/usr/bin/" }
