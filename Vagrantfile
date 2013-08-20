@@ -44,7 +44,16 @@ require 'ipaddr'
 crc = Zlib::crc32(project)
 ip = (crc & 0x00ffffff) | (10 << 24)
 ip = IPAddr.new(ip, Socket::AF_INET).to_s
-port_base = (crc % 500) * 100 + 3000
+$port_base = (crc % 500) * 100 + 3000
+
+class GetInfoCommand < Vagrant::Command::Base
+  def execute
+    puts "http://localhost:" + ($port_base + 80).to_s + "/"
+    puts "mysql -h 127.0.0.1 -P " + ($port_base + 06).to_s + " -u root -p"
+  end
+end
+
+Vagrant.commands.register(:info) { GetInfoCommand }
 
 # Now we are ready to configure the box.
 Vagrant::Config.run do |config|
@@ -110,8 +119,8 @@ Vagrant::Config.run do |config|
   # A few things still need to be done after puppet.
   config.vm.provision :shell, :path => 'vagrant/setup.sh', :args => project
 
-  config.vm.forward_port 80,   port_base + 80
-  config.vm.forward_port 3306, port_base + 6
+  config.vm.forward_port 80,   $port_base + 80
+  config.vm.forward_port 3306, $port_base + 6
 end
 
 # vim: set ft=ruby
