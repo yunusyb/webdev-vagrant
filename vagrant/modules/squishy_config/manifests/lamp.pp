@@ -46,5 +46,8 @@ class squishy_config::lamp {
   ]
 
   # TODO: do this without breaking if other manifests declare these packages.
-  package { $rpm_packages: ensure => 'installed' }
+  package { $rpm_packages:
+    ensure => 'installed',
+    notify => Service['httpd'],
+  }
 }
