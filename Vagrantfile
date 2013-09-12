@@ -75,13 +75,13 @@ Vagrant::Config.run do |config|
   #
   # NFS shared folders are several orders of magnitude faster, but they don't
   # work on Windows hosts, they can require a little configuration, and they
-  # require that vagrant run some tasks as root. If you want to use NFS, try
-  # enabling it here.  For more information, see:
+  # require that vagrant run some tasks as root. If you don't want to use NFS,
+  # try enabling it here.  For more information, see:
   #
   # http://docs-v1.vagrantup.com/v1/docs/nfs.html
   #
-  # To enable NFS, set :nfs => true here.
-  config.vm.share_folder "server", "/server", ".", :nfs => false
+  # To disable NFS, set :nfs => false here.
+  config.vm.share_folder "server", "/server", ".", :nfs => true
 
   # Forward SSH key agent over the 'vagrant ssh' connection
   config.ssh.forward_agent = true
