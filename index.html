@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Webdev-vagrant by gchaix</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Webdev-vagrant</h1>
+        <p>Creates a set of VirtualBox machines on your local machine pre-configured with Apache, PHP, MySQL.</p>
+
+        <p class="view"><a href="https://github.com/gchaix/webdev-vagrant">View the Project on GitHub <small>gchaix/webdev-vagrant</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/gchaix/webdev-vagrant/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/gchaix/webdev-vagrant/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/gchaix/webdev-vagrant">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="webdev-vagrant" class="anchor" href="#webdev-vagrant"><span class="octicon octicon-link"></span></a>webdev-vagrant</h1>
+
+<p>Creates VirtualBox VM on your local machine pre-configured with Apache, PHP, MySQL. This method provides a viable alternative to MAMP or XAMPP or even a local LAMP stack, especially for diverse teams working on the same project.</p>
+
+<h1>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h1>
+
+<ul>
+<li>VirtualBox version 4.2.10 or newer - <a href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a>
+</li>
+<li>VirtualBox extensions 4.2.10 or newer - <a href="http://download.virtualbox.org/virtualbox/4.2.10">http://download.virtualbox.org/virtualbox/4.2.10</a>
+</li>
+<li>Vagrant version 1.0.7 or newer - <a href="http://vagrantup.com/">http://vagrantup.com/</a>
+</li>
+<li>A 64bit-capable processor and operating system (Tested with Ubuntu 12.10 and OS X 10.6)
+
+<ul>
+<li>It should be possible to run on a 32bit host machine by substituting a 32bit base box, but this has not been tested. Feedback is welcome!</li>
+</ul>
+</li>
+</ul><h1>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<ul>
+<li>Install <a href="http://downloads.vagrantup.com/">vagrant 1.0.x</a> (the 1.1 branch might work, but we haven't tested it)</li>
+<li>Install <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox</a>
+</li>
+<li>Install <a href="http://git-scm.com/downloads">git</a> if you don't have it already. If you're not familiar with git, <a href="http://git-scm.com/doc">ensure you are</a>.</li>
+<li>Clone this repository. It provides the root of a new project repository.</li>
+<li>Put your project webroot in the <code>{reporoot}/htdocs</code> directory.</li>
+</ul><h1>
+<a name="configuration-details" class="anchor" href="#configuration-details"><span class="octicon octicon-link"></span></a>Configuration details</h1>
+
+<ul>
+<li>The VM is running CentOS 6, Apache 2.2.15, MySQL 5.1, PHP 5.3.3.</li>
+<li>The EPEL repo is enabled, so newer versions of packages are available.</li>
+<li>Apache is configured to serve up /server/htdocs by default.</li>
+<li>The root password is 'vagrant'.</li>
+<li>The 'vagrant' user is set to have full sudo rights, no password required.</li>
+<li>The root user on the MySQL server is preconfigured and the credentials are stored in the root user's .my.cnf, so you can run <code>sudo mysql</code> and be logged in on the MySQL console as root.</li>
+<li>The directory containing the Vagrantfile config file and the rest of this repository (including your project webroot) on your local machine is mounted on the virtual machine in <code>/server</code> to facilitate moving files to and from the virtual machine.</li>
+</ul><h1>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<ul>
+<li>To start up the virtual machine, run <code>vagrant up</code> in the same directory as the Vagrantfile config file. As soon as it's booted you should be able to hit http://localhost:8080/ and see whatever is in the <code>{reporoot}/htdocs</code> directory.</li>
+<li>If your application uses a MySQL database, configure your app to connect to <code>localhost</code> with the username <code>root</code> and password <code>root</code>.</li>
+<li>To access the virtual machine, run <code>vagrant ssh</code>.  That will log you into the virtual machine as the user <code>vagrant</code>.
+
+<ul>
+<li>In typical usage, you should only need to run database commands within the VM. All other work happens on your physical host computer.</li>
+</ul>
+</li>
+<li>To shut the machine down, run <code>vagrant halt</code>.  This gracefully shuts the machine down, retaining whatever changes you've made to the VM.</li>
+<li>To delete the virtual machine, run <code>vagrant destroy</code>.  This will completely erase the virtual machine and your MySQL databases. Your <code>Vagrantfile</code>, application code, and puppet rules are all left intact.</li>
+</ul><h1>
+<a name="credits" class="anchor" href="#credits"><span class="octicon octicon-link"></span></a>Credits</h1>
+
+<p>A big thanks to Evan Heidtmann <a href="https://github.com/ezheidtmann">(ezheidtmann)</a> for taking my vague, badly-implemented idea and making it actually <em>work</em>.  The base box and most of the Puppet and configuration scripts are his work.</p>
+
+<p>Huge chunks shamelessly stolen from a gist posted by David Lutz <a href="https://github.com/dlutzy">(dlutzy)</a>: <a href="https://gist.github.com/2469037/646a2b99656ef68eba87cec3ecec96d2d581f68d">https://gist.github.com/2469037/646a2b99656ef68eba87cec3ecec96d2d581f68d</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/gchaix">gchaix</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
