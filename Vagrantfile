@@ -62,6 +62,11 @@ Vagrant::Config.run do |config|
   config.vm.customize ["modifyvm", :id, "--memory", 1024]
   config.vm.customize ["modifyvm", :id, "--cpus", 2]
 
+  # Use VirtualBox's builtin DNS proxy to avoid silly DNS issues when the
+  # host has a DNS proxy (such as Ubuntu).
+  # See: https://www.virtualbox.org/ticket/10864
+  config.vm.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+
   # fix "read-only filesystem" errors in Mac OS X
   # see: https://github.com/mitchellh/vagrant/issues/713
   config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
