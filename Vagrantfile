@@ -91,12 +91,8 @@ Vagrant::Config.run do |config|
 
   config.vm.host_name = "web.%s.%s" % [ project, hostname.strip.to_s ]
 
-  # Ensure a few basic packages are installed.
-  #
-  # This was an attempt at speeding up the first install due to puppet's habit
-  # of running yum once for each package. But in practice, the first
-  # provisioning is quicker without this script.
-  #config.vm.provision :shell, :path => 'vagrant/packages.sh'
+  # Stuff can be done before puppet.
+  config.vm.provision :shell, :path => 'vagrant/pre-puppet.sh', :args => project
 
   # Docs: http://docs-v1.vagrantup.com/v1/docs/provisioners/puppet.html
   config.vm.provision :puppet do |puppet|
@@ -116,8 +112,8 @@ Vagrant::Config.run do |config|
     #puppet.options += " --verbose --debug"
   end
 
-  # A few things still need to be done after puppet.
-  config.vm.provision :shell, :path => 'vagrant/setup.sh', :args => project
+  # Stuff can be done after puppet.
+  config.vm.provision :shell, :path => 'vagrant/post-puppet.sh', :args => project
 
   config.vm.forward_port 80,   $port_base + 80
   config.vm.forward_port 3306, $port_base + 6
