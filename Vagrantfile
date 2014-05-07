@@ -17,6 +17,7 @@
 # Visit the site at http://projectname.local:3080/
 
 # ------------------------------------
+VAGRANTFILE_API_VERSION = "2"
 
 hostname = %x[ hostname -f ]
 username = %x[ whoami ]
@@ -46,30 +47,32 @@ ip = (crc & 0x00ffffff) | (10 << 24)
 ip = IPAddr.new(ip, Socket::AF_INET).to_s
 $port_base = (crc % 500) * 100 + 3000
 
-class GetInfoCommand < Vagrant::Command::Base
-  def execute
-    puts "http://localhost:" + ($port_base + 80).to_s + "/"
-    puts "mysql -h 127.0.0.1 -P " + ($port_base + 06).to_s + " -u root -p"
-  end
-end
-
-Vagrant.commands.register(:info) { GetInfoCommand }
+puts "HOLLA AT A VAGRANT:"
+puts "  http://localhost:" + ($port_base + 80).to_s + "/"
+puts "  mysql -h 127.0.0.1 -P " + ($port_base + 06).to_s + " -u root -p"
 
 # Now we are ready to configure the box.
-Vagrant::Config.run do |config|
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "https://911fc3b8b8cc070da44b-76fd772d1c308d2aec785b792582b337.ssl.cf2.rackcdn.com/Centos-6.4-x86_64_puppet_2013-06-11.box"
   config.vm.box = "Centos-6.4-x86_64_puppet_2013-06-11"
-  config.vm.customize ["modifyvm", :id, "--memory", 1024]
-  config.vm.customize ["modifyvm", :id, "--cpus", 2]
+  config.vm.provider 'virtualbox' do |vbox|
+    vbox.customize ["modifyvm", :id, "--memory", 1024]
+    vbox.customize ["modifyvm", :id, "--cpus", 2]
 
-  # fix "read-only filesystem" errors in Mac OS X
-  # see: https://github.com/mitchellh/vagrant/issues/713
-  config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
-  config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/server", "1"]
+    # Use VirtualBox's builtin DNS proxy to avoid silly DNS issues when the
+    # host has a DNS proxy (such as Ubuntu).
+    # See: https://www.virtualbox.org/ticket/10864
+    vbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+
+    # fix "read-only filesystem" errors in Mac OS X
+    # see: https://github.com/mitchellh/vagrant/issues/713
+    vbox.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+    vbox.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/server", "1"]
+  end
 
   # NFS mount needs hostonly net
-  # Docs: http://docs-v1.vagrantup.com/v1/docs/host_only_networking.html
-  config.vm.network :hostonly, ip
+  # Docs: http://docs.vagrantup.com/v2/networking/private_network.html
+  config.vm.network :private_network, ip: ip
 
   # Mount webroot.
   #
@@ -81,7 +84,7 @@ Vagrant::Config.run do |config|
   # http://docs-v1.vagrantup.com/v1/docs/nfs.html
   #
   # To disable NFS, set :nfs => false here.
-  config.vm.share_folder "server", "/server", ".", :nfs => true
+  config.vm.synced_folder ".", "/server", type: 'nfs'
 
   # Forward SSH key agent over the 'vagrant ssh' connection
   config.ssh.forward_agent = true
@@ -115,8 +118,8 @@ Vagrant::Config.run do |config|
   # Stuff can be done after puppet.
   config.vm.provision :shell, :path => 'vagrant/post-puppet.sh', :args => project
 
-  config.vm.forward_port 80,   $port_base + 80
-  config.vm.forward_port 3306, $port_base + 6
+  config.vm.network :forwarded_port, guest: 80,   host: $port_base + 80
+  config.vm.network :forwarded_port, guest: 3306, host: $port_base + 6
 end
 
 # vim: set ft=ruby
