@@ -42,6 +42,38 @@ Usage
 * To shut the machine down, run `vagrant halt`.  This gracefully shuts the machine down, retaining whatever changes you've made to the VM.
 * To delete the virtual machine, run `vagrant destroy`.  This will completely erase the virtual machine and your MySQL databases. Your `Vagrantfile`, application code, and puppet rules are all left intact.
 
+Known Bugs
+====
+
+Empty interface name
+---
+
+There is a [bug in vagrant 1.6.0](https://github.com/mitchellh/vagrant/issues/3649) that causes an error on `vagrant up`. This is the error message:
+
+```
+==> default: Configuring and enabling network interfaces...
+The following SSH command responded with a non-zero exit status.
+Vagrant assumes that this means the command failed!
+
+/sbin/ifdown
+
+Stdout from the command:
+
+
+
+Stderr from the command:
+
+usage: ifdown <device name>
+
+```
+
+If you see this message, install `biosdevname` and try again: 
+
+```
+vagrant ssh -c 'sudo yum install -y biosdevname'
+vagrant reload
+```
+
 Credits
 ==============
 A big thanks to Evan Heidtmann [(ezheidtmann)](https://github.com/ezheidtmann) for taking my vague, badly-implemented idea and making it actually *work*.  The base box and most of the Puppet and configuration scripts are his work.
