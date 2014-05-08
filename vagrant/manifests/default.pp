@@ -42,4 +42,5 @@ augeas { 'ssh_config':
 # vagrant boxes don't need iptables
 service { 'iptables':
   ensure => stopped,
+  enable => false,
 }
