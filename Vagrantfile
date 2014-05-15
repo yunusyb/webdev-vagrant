@@ -90,7 +90,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
   if ENV['VAGRANT_RSYNC']
     config.vm.synced_folder ".", "/server", type: 'rsync', rsync__exclude: ".git/"
-  else if ENV['VAGRANT_NO_NFS']
+  elsif ENV['VAGRANT_NO_NFS']
     config.vm.synced_folder ".", "/server"
   else
     config.vm.synced_folder ".", "/server", type: 'nfs'
