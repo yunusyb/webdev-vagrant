@@ -8,9 +8,11 @@ Requirements
 
 * VirtualBox version 4.2.10 or newer - https://www.virtualbox.org/wiki/Downloads
 * VirtualBox extensions 4.2.10 or newer - http://download.virtualbox.org/virtualbox/4.2.10
-* Vagrant version 1.0.7 or newer - http://vagrantup.com/
+* Vagrant version 1.5.1 or newer - http://vagrantup.com/
 * A 64bit-capable processor and operating system (Tested with Ubuntu 12.10 and OS X 10.6)
   * It should be possible to run on a 32bit host machine by substituting a 32bit base box, but this has not been tested. Feedback is welcome!
+* vagrant-triggers extension - https://github.com/emyl/vagrant-triggers
+  * Install: ```vagrant plugin install vagrant-triggers```
 
 Installation
 =============
