@@ -64,7 +64,6 @@ class String
   def bold;        colorize(self, "\e[1");           end
   def underline;   colorize(self, "\e[4");           end
   def blink;       colorize(self, "\e[5");           end
-  def reverse;     colorize(self, "\e[7");           end
   def conceal;     colorize(self, "\e[8");           end
 
   # Blanking
