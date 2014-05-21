@@ -106,17 +106,27 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Docs: http://docs.vagrantup.com/v2/networking/private_network.html
   config.vm.network :private_network, ip: ip
 
-  # Mount webroot.
+  # Mount webroot with NFS by default, rsync and vbox shared folders by
+  # environment variables VAGRANT_RSYNC and VAGRANT_NO_NFS, respectively.
   #
-  # NFS shared folders are several orders of magnitude faster, but they don't
-  # work on Windows hosts, they can require a little configuration, and they
-  # require that vagrant run some tasks as root. If you don't want to use NFS,
-  # try enabling it here.  For more information, see:
+  # Rsync folders give excellent page load performance, but updates to your
+  # code take longer to propagate to the server and it requires that users have
+  # "vagrant rsync-auto" running while they're working.
   #
-  # http://docs-v1.vagrantup.com/v1/docs/nfs.html
+  # NFS folders are next best; they are several orders of magnitude faster than
+  # VBox shared folders, but they don't work on Windows hosts, they can require
+  # a little configuration, and they require that vagrant run some tasks as
+  # root.
   #
-  # To disable NFS, set :nfs => false here.
-  config.vm.synced_folder ".", "/server", type: 'nfs'
+  # http://docs.vagrantup.com/v2/synced-folders/index.html
+  #
+  if ENV['VAGRANT_RSYNC']
+    config.vm.synced_folder ".", "/server", type: 'rsync', rsync__exclude: ".git/"
+  elsif ENV['VAGRANT_NO_NFS']
+    config.vm.synced_folder ".", "/server"
+  else
+    config.vm.synced_folder ".", "/server", type: 'nfs'
+  end
 
   # Forward SSH key agent over the 'vagrant ssh' connection
   config.ssh.forward_agent = true
