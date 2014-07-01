@@ -17,6 +17,7 @@
 # Visit the site at http://projectname.local:3080/
 
 # ------------------------------------
+VAGRANTFILE_API_VERSION = "2"
 
 hostname = %x[ hostname -f ]
 username = %x[ whoami ]
@@ -46,47 +47,86 @@ ip = (crc & 0x00ffffff) | (10 << 24)
 ip = IPAddr.new(ip, Socket::AF_INET).to_s
 $port_base = (crc % 500) * 100 + 3000
 
-class GetInfoCommand < Vagrant::Command::Base
-  def execute
-    puts "http://localhost:" + ($port_base + 80).to_s + "/"
-    puts "mysql -h 127.0.0.1 -P " + ($port_base + 06).to_s + " -u root -p"
+# Colorize custom output
+class String
+  # Normal colors
+  def black;       colorize(self, "\e[0m\e[30");     end
+  def red;         colorize(self, "\e[0m\e[31");     end
+  def green;       colorize(self, "\e[0m\e[32");     end
+  def yellow;      colorize(self, "\e[0m\e[33");     end
+  def blue;        colorize(self, "\e[0m\e[34");     end
+  def purple;      colorize(self, "\e[0m\e[35");     end
+  def cyan;        colorize(self, "\e[0m\e[36");     end
+  def white;       colorize(self, "\e[0m\e[37");     end
+
+  # Fun stuff
+  def clean;       colorize(self, "\e[0");           end
+  def bold;        colorize(self, "\e[1");           end
+  def underline;   colorize(self, "\e[4");           end
+  def blink;       colorize(self, "\e[5");           end
+  def conceal;     colorize(self, "\e[8");           end
+
+  # Blanking
+  def clear_scr;   colorize(self, "\e[2", mode="J"); end
+
+  # Placement
+  def place(line, column)
+    colorize(self, "\e[#{line};#{column}", mode='f')
   end
+
+  def save_pos;    colorize(self, "\e[", mode='s');  end
+  def return_pos;  colorize(self, "\e[", mode='u');  end
+
+  def colorize(text, color_code, mode='m')
+    "#{color_code}#{mode}#{text}\e[0m"
+  end
+
 end
 
-Vagrant.commands.register(:info) { GetInfoCommand }
-
 # Now we are ready to configure the box.
-Vagrant::Config.run do |config|
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "https://911fc3b8b8cc070da44b-76fd772d1c308d2aec785b792582b337.ssl.cf2.rackcdn.com/Centos-6.4-x86_64_puppet_2013-06-11.box"
   config.vm.box = "Centos-6.4-x86_64_puppet_2013-06-11"
-  config.vm.customize ["modifyvm", :id, "--memory", 1024]
-  config.vm.customize ["modifyvm", :id, "--cpus", 2]
+  config.vm.provider 'virtualbox' do |vbox|
+    vbox.customize ["modifyvm", :id, "--memory", 1024]
+    vbox.customize ["modifyvm", :id, "--cpus", 2]
 
-  # Use VirtualBox's builtin DNS proxy to avoid silly DNS issues when the
-  # host has a DNS proxy (such as Ubuntu).
-  # See: https://www.virtualbox.org/ticket/10864
-  config.vm.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    # Use VirtualBox's builtin DNS proxy to avoid silly DNS issues when the
+    # host has a DNS proxy (such as Ubuntu).
+    # See: https://www.virtualbox.org/ticket/10864
+    vbox.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
 
-  # fix "read-only filesystem" errors in Mac OS X
-  # see: https://github.com/mitchellh/vagrant/issues/713
-  config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
-  config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/server", "1"]
+    # fix "read-only filesystem" errors in Mac OS X
+    # see: https://github.com/mitchellh/vagrant/issues/713
+    vbox.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+    vbox.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/server", "1"]
+  end
 
   # NFS mount needs hostonly net
-  # Docs: http://docs-v1.vagrantup.com/v1/docs/host_only_networking.html
-  config.vm.network :hostonly, ip
+  # Docs: http://docs.vagrantup.com/v2/networking/private_network.html
+  config.vm.network :private_network, ip: ip
 
-  # Mount webroot.
+  # Mount webroot with NFS by default, rsync and vbox shared folders by
+  # environment variables VAGRANT_RSYNC and VAGRANT_NO_NFS, respectively.
   #
-  # NFS shared folders are several orders of magnitude faster, but they don't
-  # work on Windows hosts, they can require a little configuration, and they
-  # require that vagrant run some tasks as root. If you don't want to use NFS,
-  # try enabling it here.  For more information, see:
+  # Rsync folders give excellent page load performance, but updates to your
+  # code take longer to propagate to the server and it requires that users have
+  # "vagrant rsync-auto" running while they're working.
   #
-  # http://docs-v1.vagrantup.com/v1/docs/nfs.html
+  # NFS folders are next best; they are several orders of magnitude faster than
+  # VBox shared folders, but they don't work on Windows hosts, they can require
+  # a little configuration, and they require that vagrant run some tasks as
+  # root.
   #
-  # To disable NFS, set :nfs => false here.
-  config.vm.share_folder "server", "/server", ".", :nfs => true
+  # http://docs.vagrantup.com/v2/synced-folders/index.html
+  #
+  if ENV['VAGRANT_RSYNC']
+    config.vm.synced_folder ".", "/server", type: 'rsync', rsync__exclude: ".git/"
+  elsif ENV['VAGRANT_NO_NFS']
+    config.vm.synced_folder ".", "/server"
+  else
+    config.vm.synced_folder ".", "/server", type: 'nfs'
+  end
 
   # Forward SSH key agent over the 'vagrant ssh' connection
   config.ssh.forward_agent = true
@@ -96,12 +136,8 @@ Vagrant::Config.run do |config|
 
   config.vm.host_name = "web.%s.%s" % [ project, hostname.strip.to_s ]
 
-  # Ensure a few basic packages are installed.
-  #
-  # This was an attempt at speeding up the first install due to puppet's habit
-  # of running yum once for each package. But in practice, the first
-  # provisioning is quicker without this script.
-  #config.vm.provision :shell, :path => 'vagrant/packages.sh'
+  # Stuff can be done before puppet.
+  config.vm.provision :shell, :path => 'vagrant/pre-puppet.sh', :args => project
 
   # Docs: http://docs-v1.vagrantup.com/v1/docs/provisioners/puppet.html
   config.vm.provision :puppet do |puppet|
@@ -121,11 +157,20 @@ Vagrant::Config.run do |config|
     #puppet.options += " --verbose --debug"
   end
 
-  # A few things still need to be done after puppet.
-  config.vm.provision :shell, :path => 'vagrant/setup.sh', :args => project
+  # Stuff can be done after puppet.
+  config.vm.provision :shell, :path => 'vagrant/post-puppet.sh', :args => project
 
-  config.vm.forward_port 80,   $port_base + 80
-  config.vm.forward_port 3306, $port_base + 6
+  config.vm.network :forwarded_port, guest: 80,   host: $port_base + 80
+  config.vm.network :forwarded_port, guest: 3306, host: $port_base + 6
+
+  config.trigger.after [:up, :resume, :status, :restart] do
+    $banner = "==> ".bold + "Squishy".cyan.bold + "Media".green.bold + " VAGRANT for " + (project).to_s.yellow.bold
+    $link = "http://" + project.to_s + ".local:" + ($port_base + 80).to_s + "/"
+    puts
+    puts $banner
+    puts $link.underline
+    puts
+  end
 end
 
 # vim: set ft=ruby
