@@ -16,6 +16,7 @@ Installation
 =============
 
 * Install [vagrant 1.0.x](http://downloads.vagrantup.com/) (the 1.1 branch might work, but we haven't tested it)
+  * Additionally, ensure the vagrant-triggers plugin is installed: `$ vagrant plugin install vagrant-triggers`
 * Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * Install [git](http://git-scm.com/downloads) if you don't have it already. If you're not familiar with git, [ensure you are](http://git-scm.com/doc).
 * Clone this repository. It provides the root of a new project repository.
