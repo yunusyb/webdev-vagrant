@@ -5,6 +5,7 @@ include squishy_config::minimum
 include squishy_config::lamp
 include squishy_config::mysql
 include squishy_config::drush
+include squishy_config::vim
 
 apache::vhost { 'vagrant':
   priority => '10',
