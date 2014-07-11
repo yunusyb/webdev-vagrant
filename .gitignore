@@ -1,3 +1,4 @@
+*.swp
 .vagrant
 data/sites/*/files/*
 data/sites/*/settings.php
