@@ -1,10 +1,16 @@
 # squishy detect server type environment and modify prompt
 
+# git prompt settings
+export GIT_PS1=1
+export GIT_PS1_SHOWDIRTYSTATE=1
+export GIT_PS1_SHOWCOLORHINTS=1
+export GIT_PS1_SHOWUNTRACKEDFILES=1
+
 # Set the initial prompt.  Red prompt if user is root
 if [[ ${EUID} == 0 ]] ; then
   PS1='\[\033[01;31m\]\h\[\033[01;34m\] \W \$\[\033[00m\] '
 else
-  PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]$ '
+  PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]$ '
 fi
 
 # We guess server type in phases. The zeroth phase is a SERVERTYPE environment
@@ -24,13 +30,13 @@ if [ -z "$SERVERTYPE" ]; then
     *.local)
       SERVERTYPE="LOCAL"
       ;;
-    *-dev*|*.private)
+    *-dev*|*.private|dev-*)
       SERVERTYPE="DEV"
       ;;
-    *-stg*)
+    *-stg*|stg-*|*stag*)
       SERVERTYPE="STAGING"
       ;;
-    *-web*|*-db*)
+    *-web*|*-db*|*prod*)
       SERVERTYPE="PRODUCTION"
       ;;
     *)
@@ -57,7 +63,18 @@ case "$SERVERTYPE" in
 esac
 
 # generate the tag with servertype text
-SERVER_TYPE_PROMPT="$PROMPT_COLOR[ $SERVERTYPE ]\[\033[00m\] "
+export SERVER_TYPE_PROMPT="$PROMPT_COLOR[$SERVERTYPE]\[\033[00m\] "
 
 # Insert into the PS1 prompt
-PS1="${SERVER_TYPE_PROMPT}${PS1}"
+PS1="${SERVER_TYPE_PROMPT}${PS1}\[\033]0;\u@\h:$PWD\007\]"
+
+# git fancy-ness
+if [ -f /usr/local/bin/git-prompt.sh ]; then
+  if [ ${EUID} == 0 ] ; then
+    . /usr/local/bin/git-prompt.sh
+    PROMPT_COMMAND='__git_ps1 "${SERVER_TYPE_PROMPT}\[\033[01;31m\]\u@\h\[\033[01;34m\]:\W\[\033[00m\]\[\033]0;\u@\h:$PWD\007\]" "\\\$ "'
+  else
+    . /usr/local/bin/git-prompt.sh
+    PROMPT_COMMAND='__git_ps1 "${SERVER_TYPE_PROMPT}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\[\033]0;\u@\h:$PWD\007\]" "\\\$ "'
+  fi
+fi
