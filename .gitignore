@@ -1,5 +1,5 @@
 .vagrant*
+
+# Drupal
 data/sites/*/files/*
 data/sites/*/settings.php
-devel_themer/
-simplehtmldom/

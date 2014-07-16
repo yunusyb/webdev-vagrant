@@ -18,6 +18,7 @@ Installation
 =============
 
 * Install [vagrant 1.0.x](http://downloads.vagrantup.com/) (the 1.1 branch might work, but we haven't tested it)
+  * Additionally, ensure the vagrant-triggers plugin is installed: `$ vagrant plugin install vagrant-triggers`
 * Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * Install [git](http://git-scm.com/downloads) if you don't have it already. If you're not familiar with git, [ensure you are](http://git-scm.com/doc).
 * Clone this repository. It provides the root of a new project repository.
@@ -37,7 +38,7 @@ Configuration details
 Usage
 ==============
 
-* To start up the virtual machine, run `vagrant up` in the same directory as the Vagrantfile config file. As soon as it's booted you should be able to hit http://localhost:8080/ and see whatever is in the `{reporoot}/htdocs` directory.
+* To start up the virtual machine, run `vagrant up` in the same directory as the Vagrantfile config file. As soon as it's booted you should be able to hit the URL specified after the `==> SquishyMedia VAGRANT for [$projectname]` message, and see whatever is in the `{reporoot}/htdocs` directory.
 * If your application uses a MySQL database, configure your app to connect to `localhost` with the username `root` and password `root`.
 * To access the virtual machine, run `vagrant ssh`.  That will log you into the virtual machine as the user `vagrant`.
   * In typical usage, you should only need to run database commands within the VM. All other work happens on your physical host computer.
