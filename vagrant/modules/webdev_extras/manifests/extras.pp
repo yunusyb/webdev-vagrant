@@ -1,8 +1,7 @@
+# a class for random extra resources that don't necessarily fit elsewhere
+
 class webdev_extras::extras {
 
-package { 'php-drush-drush':
-    ensure => 'installed',
-  }
 
 package { 'vim-minimal':
     ensure => 'installed',
