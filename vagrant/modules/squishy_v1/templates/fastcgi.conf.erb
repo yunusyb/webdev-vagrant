@@ -1,0 +1,17 @@
+# FastCGI
+User apache
+Group apache
+# LoadModule fastcgi_module modules/mod_fastcgi.so
+FastCgiIpcDir /var/run/mod_fastcgi
+FastCgiWrapper Off
+FastCgiConfig -idle-timeout 3600 -maxClassProcesses 1
+FastCgiExternalServer /usr/lib/cgi-bin/php5-fcgi -host 127.0.0.1:9001 -pass-header Authorization -idle-timeout 3600
+AddHandler php5-fcgi .php
+Action php5-fcgi /php5-fcgi
+Alias /php5-fcgi /usr/lib/cgi-bin/php5-fcgi
+DirectoryIndex index.php index.html index.htm
+# Add proxy stuff so things don't break all over
+LoadModule proxy_http_module modules/mod_proxy_http.so
+# Uncomment these to proxy FTP or HTTPS
+# LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
+ LoadModule proxy_connect_module modules/mod_proxy_connect.so

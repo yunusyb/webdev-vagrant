@@ -1,10 +1,9 @@
 # Our "lamp" manifest requires this external variable.
 $mysql_root_password = 'root'
 
-include squishy_config::minimum
-include squishy_config::lamp
-include squishy_config::drush
-include squishy_config::vim
+include squishy_v1::minimum
+include squishy_v1::lamp
+include webdev_extras::extras
 
 apache::vhost { 'vagrant':
   priority => '10',
