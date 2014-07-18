@@ -101,7 +101,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vbox.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
     vbox.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/server", "1"]
   end
-
+  
   # NFS mount needs hostonly net
   # Docs: http://docs.vagrantup.com/v2/networking/private_network.html
   config.vm.network :private_network, ip: ip
@@ -163,6 +163,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 80,   host: $port_base + 80
   config.vm.network :forwarded_port, guest: 3306, host: $port_base + 6
 
+if Vagrant.has_plugin?("vagrant-triggers")
   config.trigger.after [:up, :resume, :status, :restart] do
     $banner = "==> ".bold + "Squishy".cyan.bold + "Media".green.bold + " VAGRANT for " + (project).to_s.yellow.bold
     $link = "http://" + project.to_s + ".local:" + ($port_base + 80).to_s + "/"
@@ -171,6 +172,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puts $link.underline
     puts
   end
+else
+    puts "\n\n!!! The vagrant-triggers plugin is required for display of your URL & port. !!!\n\n"
+    puts "Run 'vagrant plugin install vagrant-triggers' to install it.\n\n"
+end
+
 end
 
 # vim: set ft=ruby
