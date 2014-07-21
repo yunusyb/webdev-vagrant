@@ -38,12 +38,19 @@ Configuration details
 Usage
 ==============
 
-* To start up the virtual machine, run `vagrant up` in the same directory as the Vagrantfile config file. As soon as it's booted you should be able to hit the URL specified after the `==> SquishyMedia VAGRANT for [$projectname]` message, and see whatever is in the `{reporoot}/htdocs` directory.
+* To start up the virtual machine, run `vagrant up` in the same directory as the Vagrantfile config file (this can take a few minutes). As soon as it's booted you should be able to hit the URL specified after the `==> SquishyMedia VAGRANT for [$projectname]` message, and see whatever is in the `{reporoot}/htdocs` directory.
 * If your application uses a MySQL database, configure your app to connect to `localhost` with the username `root` and password `root`.
 * To access the virtual machine, run `vagrant ssh`.  That will log you into the virtual machine as the user `vagrant`.
   * In typical usage, you should only need to run database commands within the VM. All other work happens on your physical host computer.
 * To shut the machine down, run `vagrant halt`.  This gracefully shuts the machine down, retaining whatever changes you've made to the VM.
 * To delete the virtual machine, run `vagrant destroy`.  This will completely erase the virtual machine and your MySQL databases. Your `Vagrantfile`, application code, and puppet rules are all left intact.
+* To enable a drupal instance, add this block to the default.pp manifest:
+```
+squishy_v1::drupal_site { 'default':
+  root => '/server/htdocs',
+    db_pass => 'asdf',
+}
+```
 
 Known Bugs
 ====
@@ -76,6 +83,38 @@ If you see this message, install `biosdevname` and try again:
 vagrant ssh -c 'sudo yum install -y biosdevname'
 vagrant reload
 ```
+
+General error || Missing Drupal Files 
+---
+You might see an error message at the end of your puppet run that looks something like this:
+```
+The following SSH command responded with a non-zero exit status.
+Vagrant assumes that this means the command failed!
+
+FACTER_vagrant='1' FACTER_vagrant_ssh_user='someuser' puppet apply --hiera_config /server/vagrant/hiera.yaml --logdest syslog --modulepath '/tmp/vagrant-puppet-1/modules-0' --manifestdir /tmp/vagrant-puppet-1/manifests --detailed-exitcodes /tmp/vagrant-puppet-1/manifests/default.pp || [ $? -eq 2 ]
+
+Stdout from the command:
+
+
+
+Stderr from the command:
+```
+This is a generalized message telling you that puppet was unable to do something. If you added the block of code to default.pp to enable drupal development, there's a good chance you're seeing the error because puppet can't find your drupal files. Be sure to either install the files for drupal to the htdocs directory, or symlink htdocs to wherever your drupal files live.
+
+If you're sure you've got your drupal files in the right place, or didn't include the drupal code in your default.pp, you can connect to the VM with `vagrant ssh` and run the following command to see what puppet was unable to do: 
+`sudo cat /var/log/messages | grep "Could not"`
+
+No drupal database
+---
+
+
+If you've included the drupal code in your default.pp and put your drupal files in the htdocs directory, you might see the following error when visiting the URL that vagrant you:
+```
+PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'default.semaphore' doesn't exist: SELECT expire, value FROM {semaphore} WHERE name = :name; Array ( [:name] => variable_init ) in lock_may_be_available() (line 167 of /server/drupal-7.29/includes/lock.inc).
+'''
+This simply means there is no database for drupal to use. You can follow the directions on the drupal site to manually set up a database, or you can do it the super simple way by connecting to your VM with `vagrant ssh` and then `cd /server/htdocs && drush si`
+
+Answer "yes" to the scary confirmation prompt about dropping all your tables (you have no database, and no tables to drop). Drush will set up your database and give you a username and password to use for further drupal setup. Reload the URL that vagrant gave you to see the "Welcome to Site-Install" message from drupal.
 
 Credits
 ==============
