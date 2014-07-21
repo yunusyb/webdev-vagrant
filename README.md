@@ -87,6 +87,7 @@ vagrant reload
 General error || Missing Drupal Files 
 ---
 You might see an error message at the end of your puppet run that looks something like this:
+
 ```
 The following SSH command responded with a non-zero exit status.
 Vagrant assumes that this means the command failed!
@@ -99,6 +100,7 @@ Stdout from the command:
 
 Stderr from the command:
 ```
+
 This is a generalized message telling you that puppet was unable to do something. If you added the block of code to default.pp to enable drupal development, there's a good chance you're seeing the error because puppet can't find your drupal files. Be sure to either install the files for drupal to the htdocs directory, or symlink htdocs to wherever your drupal files live.
 
 If you're sure you've got your drupal files in the right place, or didn't include the drupal code in your default.pp, you can connect to the VM with `vagrant ssh` and run the following command to see what puppet was unable to do: 
@@ -109,9 +111,11 @@ No drupal database
 
 
 If you've included the drupal code in your default.pp and put your drupal files in the htdocs directory, you might see the following error when visiting the URL that vagrant you:
+
 ```
 PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'default.semaphore' doesn't exist: SELECT expire, value FROM {semaphore} WHERE name = :name; Array ( [:name] => variable_init ) in lock_may_be_available() (line 167 of /server/drupal-7.29/includes/lock.inc).
-'''
+```
+
 This simply means there is no database for drupal to use. You can follow the directions on the drupal site to manually set up a database, or you can do it the super simple way by connecting to your VM with `vagrant ssh` and then `cd /server/htdocs && drush si`
 
 Answer "yes" to the scary confirmation prompt about dropping all your tables (you have no database, and no tables to drop). Drush will set up your database and give you a username and password to use for further drupal setup. Reload the URL that vagrant gave you to see the "Welcome to Site-Install" message from drupal.
