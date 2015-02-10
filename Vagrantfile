@@ -120,13 +120,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
   # http://docs.vagrantup.com/v2/synced-folders/index.html
   #
-  if ENV['VAGRANT_RSYNC']
-    config.vm.synced_folder ".", "/server", type: 'rsync', rsync__exclude: ".git/"
-  elsif ENV['VAGRANT_NO_NFS']
-    config.vm.synced_folder ".", "/server"
-  else
+  #if ENV['VAGRANT_RSYNC']
+  #  config.vm.synced_folder ".", "/server", type: 'rsync', rsync__exclude: ".git/"
+  #elsif ENV['VAGRANT_NO_NFS']
+  #  config.vm.synced_folder ".", "/server"
+  #else
     config.vm.synced_folder ".", "/server", type: 'nfs'
-  end
+  #end
 
   # Forward SSH key agent over the 'vagrant ssh' connection
   config.ssh.forward_agent = true
@@ -134,7 +134,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Enable to launch a VirtualBox console
   #cnf.vm.boot_mode = :gui
 
-  config.vm.host_name = "web.%s.%s" % [ project, hostname.strip.to_s ]
+  config.vm.host_name = "%s.%s" % [ project, hostname.strip.to_s ]
 
   # Stuff can be done before puppet.
   config.vm.provision :shell, :path => 'vagrant/pre-puppet.sh', :args => project
@@ -166,7 +166,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 if Vagrant.has_plugin?("vagrant-triggers")
   config.trigger.after [:up, :resume, :status, :restart] do
     $banner = "==> ".bold + "Squishy".cyan.bold + "Media".green.bold + " VAGRANT for " + (project).to_s.yellow.bold
-    $link = "http://" + project.to_s + ".local:" + ($port_base + 80).to_s + "/"
+    $link = "http://localhost:" + ($port_base + 80).to_s + "/"
     puts
     puts $banner
     puts $link.underline
