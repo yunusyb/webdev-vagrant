@@ -132,7 +132,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.forward_agent = true
 
   # Enable to launch a VirtualBox console
-  #cnf.vm.boot_mode = :gui
+  #config.vm.provider "virtualbox" do |v|
+  #   v.gui = true
+  #end
 
   config.vm.host_name = "%s.%s" % [ project, hostname.strip.to_s ]
 
