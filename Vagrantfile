@@ -121,11 +121,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # http://docs.vagrantup.com/v2/synced-folders/index.html
   #
   #if ENV['VAGRANT_RSYNC']
-  #  config.vm.synced_folder ".", "/server", type: 'rsync', rsync__exclude: ".git/"
+    config.vm.synced_folder ".", "/server", type: 'rsync', rsync__exclude: ".git/"
   #elsif ENV['VAGRANT_NO_NFS']
   #  config.vm.synced_folder ".", "/server"
   #else
-    config.vm.synced_folder ".", "/server", type: 'nfs'
+  #  config.vm.synced_folder ".", "/server", type: 'nfs'
   #end
 
   # Forward SSH key agent over the 'vagrant ssh' connection
@@ -167,7 +167,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 if Vagrant.has_plugin?("vagrant-triggers")
   config.trigger.after [:up, :resume, :status, :restart] do
-    $banner = "==> ".bold + "Squishy".cyan.bold + "Media".green.bold + " VAGRANT for " + (project).to_s.yellow.bold
+    $banner = "==> ".bold + " VAGRANT for " + (project).to_s.yellow.bold
     $link = "http://localhost:" + ($port_base + 80).to_s + "/"
     puts
     puts $banner
