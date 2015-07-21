@@ -63,7 +63,7 @@ define squishy_v1::drupal_site(
     file { $_writable_dirs:
       ensure => directory,
       owner => 'apache',
-      group => 'squishydev',
+      group => 'dev',
       mode => 'ug+w,o-w',
       # recurse => true, # this really punishes the server recursively chmodding on every puppet run
       recurse => false,
@@ -81,7 +81,7 @@ define squishy_v1::drupal_site(
   # create settings.php using the database credentials specified
   file { $_settings_file:
     content => template('squishy_v1/settings.php.erb'),
-    group => $vagrant ? { 1 => undef, default => 'squishydev' },
+    group => $vagrant ? { 1 => undef, default => 'dev' },
     mode => 'ug+w,o-w',
   }
 

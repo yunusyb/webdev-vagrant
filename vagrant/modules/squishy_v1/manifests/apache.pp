@@ -35,13 +35,13 @@ class squishy_v1::apache {
       ensure	=> directory,
       mode	=> 2775,
       owner	=> 'root',
-      group	=> 'squishydev',
+      group	=> 'dev',
     }
     file { '/server/www/':
       ensure => directory,
       mode   => 2775,
       owner  => 'root',
-      group  => 'squishydev',
+      group  => 'dev',
     }
   }
 }

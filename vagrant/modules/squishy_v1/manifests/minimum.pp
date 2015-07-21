@@ -24,25 +24,6 @@ class squishy_v1::minimum {
       gpgcheck => 0,
     }
 
-# Rackspace Cloud Monitoring - Not needed for development vm
-  if (!$vagrant){
-    yumrepo { "rackspace":
-      baseurl => "http://stable.packages.cloudmonitoring.rackspace.com/centos-6-x86_64",
-      enabled => 1,
-      descr => "Rackspace Monitoring",
-      gpgcheck => 0,
-    }
-  }
-
-
-# Squishy custom repos
-    yumrepo { "sqm":
-      baseurl => "http://support.squishyclients.net/CentOS/6/updates/x86_64/",
-      enabled => 1,
-      descr => "Squishymedia CentOS-6 - Updates",
-      gpgcheck => 0,
-    }
-
     # Centos 6.4 doesn't include this lens by default.
     # We got it from https://github.com/estahn/augeas/blob/master/lenses/ssh.aug
     file { "/usr/share/augeas/lenses/ssh.aug":
@@ -72,31 +53,6 @@ class squishy_v1::minimum {
 
     package {'git':
       ensure => 'latest',
-      require => Yumrepo["sqm"],
-    }
-  }
-
-  # Vagrant takes care of users, ssh, and puppet configuration, so we
-  # only set these things up if we're on a real server.
-  if (!$vagrant) {
-    class {'squishy_v1::users': }
-    if $operatingsystem == 'centos' { class {'squishy_v1::ssh': } }
-
-    # set puppet master
-    augeas { "puppet.conf":
-      context => "/files/etc/puppet/puppet.conf",
-      changes => [
-        "set agent/server puppet.squishyclients.net",
-        "set main/environment $environment"
-      ]
-    }
-
-    cron { "puppet":
-      command => "/usr/bin/puppet agent --onetime --no-daemonize --logdest syslog > /dev/null 2>&1",
-      user => "root",
-      hour => "*",
-      minute => fqdn_rand( 60 ),
-      ensure => present,
     }
   }
 
@@ -117,20 +73,8 @@ class squishy_v1::minimum {
     enable => true,
   }
 
-  if (!$vagrant){
-      package {'rackspace-monitoring-agent':
-        ensure => 'latest',
-      }
-  }
-
   package {'openssl':
     ensure => 'latest',
   }
 
-  # New Relic
-  #squishy_v1::newrelic_sysmon { 'newrelic': }
-
-  if (!$vagrant) {
-      class {'squishy_v1::newrelic_sysmon': }
-  }
 }
