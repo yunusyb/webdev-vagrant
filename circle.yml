@@ -1,0 +1,7 @@
+checkout:
+  post:
+    - gem install puppet-lint
+
+test:
+  override:
+    - puppet-lint vagrant/manifests/default.pp

@@ -3,6 +3,8 @@ webdev-vagrant
 
 Creates VirtualBox VM on your local machine pre-configured with Apache, PHP, MySQL. This method provides a viable alternative to MAMP or XAMPP or even a local LAMP stack, especially for diverse teams working on the same project.
 
+Build status: [![Circle CI](https://circleci.com/gh/gchaix/webdev-vagrant.svg?style=svg)](https://circleci.com/gh/gchaix/webdev-vagrant)
+
 TLDR - getting started right away
 =============
 
