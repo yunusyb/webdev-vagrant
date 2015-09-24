@@ -1,6 +1,6 @@
 checkout:
   post:
-    - sudo gem install puppet-lint
+    - gem install puppet-lint
 
 test:
   override:
