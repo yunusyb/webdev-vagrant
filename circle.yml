@@ -1,7 +1,6 @@
 checkout:
   post:
-    - apt-get update
-    - apt-get install -y --no-install-recommends puppet puppet-lint
+    - sudo apt-get update && sudo apt-get install -y --no-install-recommends puppet puppet-lint
 
 test:
   override:
