@@ -1,0 +1,8 @@
+checkout:
+  post:
+    - apt-get update
+    - apt-get install -y --no-install-recommends puppet puppet-lint
+
+test:
+  override:
+    - puppet-lint manifests/default.pp
