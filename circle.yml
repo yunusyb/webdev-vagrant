@@ -4,4 +4,4 @@ checkout:
 
 test:
   override:
-    - puppet-lint manifests/default.pp
+    - puppet-lint vagrant/manifests/default.pp
