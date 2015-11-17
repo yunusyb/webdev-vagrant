@@ -3,13 +3,15 @@ webdev-vagrant
 
 Creates VirtualBox VM on your local machine pre-configured with Apache, PHP, MySQL. This method provides a viable alternative to MAMP or XAMPP or even a local LAMP stack, especially for diverse teams working on the same project.
 
+This project is designed by default to work with Drupal, but it should work equally well with other PHP applications.
+
 Build status: [![Circle CI](https://circleci.com/gh/gchaix/webdev-vagrant.svg?style=svg)](https://circleci.com/gh/gchaix/webdev-vagrant)
 
 TLDR - getting started right away
 =============
 
 0. clone this repo
-0. clone your projecy webroot into ```./htdocs```
+0. clone your project webroot into ```./htdocs```
 0. run ```vagrant up```
 
 Requirements
@@ -31,7 +33,7 @@ Installation
 * Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * Install [git](http://git-scm.com/downloads) if you don't have it already. If you're not familiar with git, [ensure you are](http://git-scm.com/doc).
 * Clone this repository. It provides the root of a new project repository.
-* Put your project webroot in the `{reporoot}/htdocs` directory.
+* Put or symlink your project webroot into the `{reporoot}/htdocs` directory.
 
 Configuration details
 ==============
