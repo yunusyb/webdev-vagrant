@@ -87,6 +87,7 @@ end
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "https://911fc3b8b8cc070da44b-76fd772d1c308d2aec785b792582b337.ssl.cf2.rackcdn.com/Centos-6.4-x86_64_puppet_2013-06-11.box"
   config.vm.box = "Centos-6.4-x86_64_puppet_2013-06-11"
+  config.vm.box_download_insecure = true
   config.vm.provider 'virtualbox' do |vbox|
     vbox.customize ["modifyvm", :id, "--memory", 1024]
     vbox.customize ["modifyvm", :id, "--cpus", 2]
